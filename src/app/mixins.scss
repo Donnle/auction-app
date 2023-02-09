@@ -1,0 +1,37 @@
+@mixin authorization {
+  &-label {
+    display: block;
+    margin-bottom: 15px;
+
+    &__title {
+      font-size: 1.6rem;
+      line-height: 1.2em;
+      padding-bottom: 5px;
+    }
+
+    &__input-wrapper {
+      position: relative;
+
+      &-input {
+        font-size: 1.4rem;
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #333;
+      }
+
+      &-error {
+        display: block;
+        font-size: 1.2rem;
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        width: 150px;
+        padding: 10px 5px;
+        transform: translateY(-50%);
+        background-color: #A34865;
+      }
+    }
+  }
+}
