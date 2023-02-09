@@ -1,0 +1,22 @@
+<ngx-smart-modal #login identifier='login'>
+  <form (ngSubmit)='onSubmit()' [formGroup]='loginForm' class='form'>
+    <label class='form-label'>
+      <p class='form-label__title'>Email:</p>
+      <div class='form-label__input-wrapper'>
+        <input class='form-label__input-wrapper-input' formControlName='email' type='text' />
+      </div>
+    </label>
+    <label class='form-label'>
+      <p class='form-label__title'>Password:</p>
+      <div class='form-label__input-wrapper'>
+        <input class='form-label__input-wrapper-input' formControlName='password' type='password' />
+      </div>
+    </label>
+    <app-button
+      [attr.aria-disabled]='loginForm.invalid'
+      [buttonData]='buttonData'
+      [disabled]='loginForm.invalid'
+      class='submit-button'>
+    </app-button>
+  </form>
+</ngx-smart-modal>

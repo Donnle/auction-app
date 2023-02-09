@@ -1,0 +1,7 @@
+<button [attr.aria-disabled]='disabled' [disabled]='disabled' [ngClass]="[
+  'button',
+  'button-size__' + buttonData?.size || 'medium',
+  'button-type__' + buttonData?.type || 'orange'
+]">
+  {{buttonData?.text}}
+</button>

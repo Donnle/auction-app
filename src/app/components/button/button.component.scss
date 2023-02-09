@@ -1,0 +1,49 @@
+.button {
+  display: block;
+  transition: all .3s ease;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+.button-size {
+  &__small {
+    padding: 8px 15px;
+  }
+
+  &__medium {
+    padding: 12px 20px;
+  }
+
+  &__large {
+    padding: 19px 47px;
+  }
+
+  &__long {
+    padding: 15px;
+    width: 100%;
+  }
+}
+
+.button-type {
+  &__orange {
+    color: var(--white-color);
+    background-color: var(--light-orange-color);
+  }
+
+  &__transparent {
+    color: var(--black-color);
+    outline: 1px solid var(--black-color);
+    background-color: transparent;
+
+    &:not(:disabled):hover {
+      color: var(--white-color);
+      outline: 1px solid var(--light-orange-color);
+      background-color: var(--light-orange-color);
+    }
+  }
+}
