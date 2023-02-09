@@ -28,7 +28,8 @@
             <app-button [attr.aria-disabled]='isButtonsDisabled'
                         [buttonData]='buyNowData'
                         [disabled]='isButtonsDisabled'></app-button>
-            <app-button [attr.aria-disabled]='isButtonsDisabled'
+            <app-button (click)='openRaiseBet()'
+                        [attr.aria-disabled]='isButtonsDisabled'
                         [buttonData]='betData'
                         [disabled]='isButtonsDisabled'></app-button>
           </div>
@@ -39,3 +40,4 @@
   </div>
 </div>
 
+<app-raise-bet-popup></app-raise-bet-popup>
