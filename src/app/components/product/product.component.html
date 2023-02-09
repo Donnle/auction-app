@@ -1,0 +1,24 @@
+<div class='products-list__item product'>
+  <div [routerLink]='"/product/" + product._id' class='product-image'>
+    <img [src]='product.photos[0]' alt='product' class='product-image__img'>
+  </div>
+  <div class='product-content'>
+    <h3 [routerLink]='"/product/" + product._id' class='product-content__title'>{{product.title}}</h3>
+    <span
+      class='product-content__end-date'>До кінця аукціону:
+      {{additionalService.calculateDaysLeft(product.endDate) | date:getHighestDateType(product.endDate)}}
+      </span>
+    <div class='product-content__prices prices'>
+      <ul class='prices-flexbox'>
+        <li class='prices-flexbox__price'>
+          <span class='prices-flexbox__price-item'>Купити:</span>
+          <span class='prices-flexbox__price-item'>{{product.buyNowPrice}} грн</span>
+        </li>
+        <li class='prices-flexbox__price'>
+          <span class='prices-flexbox__price-item'>Ставка:</span>
+          <span class='prices-flexbox__price-item'>{{product.currentBet}} грн</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

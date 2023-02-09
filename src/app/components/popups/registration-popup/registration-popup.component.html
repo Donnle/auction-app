@@ -1,0 +1,63 @@
+<ngx-smart-modal #registration identifier='registration'>
+  <form (ngSubmit)='onSubmit()' [formGroup]='loginForm' action='' class='form'>
+    <label class='form-label'>
+      <p class='form-label__title'>Email:</p>
+      <div class='form-label__input-wrapper'>
+        <input class='form-label__input-wrapper-input' formControlName='email' type='text' />
+        <span *ngIf='loginForm.controls["email"]?.errors?.["required"]'
+              class='form-label__input-wrapper-error'>Обов'язкове поле</span>
+        <span *ngIf='loginForm.controls["email"]?.errors?.["email"]'
+              class='form-label__input-wrapper-error'>Email error</span>
+      </div>
+    </label>
+
+    <label class='form-label'>
+      <p class='form-label__title'>Password:</p>
+      <div class='form-label__input-wrapper'>
+        <input class='form-label__input-wrapper-input' formControlName='password' type='password' />
+        <span *ngIf='loginForm.controls["password"]?.errors?.["required"]' class='form-label__input-wrapper-error'>Обов'язкове поле</span>
+        <span
+          *ngIf='loginForm.controls["password"]?.errors?.["minlength"]?.["requiredLength"] > loginForm.controls["password"]?.errors?.["minlength"]?.["actualLength"]'
+          class='form-label__input-wrapper-error'>Мінімальна довжина пароля - 6 символів</span>
+      </div>
+    </label>
+
+    <label class='form-label'>
+      <p class='form-label__title'>Name:</p>
+      <div class='form-label__input-wrapper'>
+        <input class='form-label__input-wrapper-input' formControlName='name' type='text' />
+        <span *ngIf='loginForm.controls["name"]?.errors?.["required"]' class='form-label__input-wrapper-error'>Обов'язкове поле</span>
+        <span *ngIf='loginForm.controls["name"]?.errors?.["includeNotAvailableSymbols"]'
+              class='form-label__input-wrapper-error'>Ім'я може мати лише літери</span>
+      </div>
+    </label>
+
+    <label class='form-label'>
+      <p class='form-label__title'>Surname:</p>
+      <div class='form-label__input-wrapper'>
+        <input class='form-label__input-wrapper-input' formControlName='surname' type='text' />
+        <span *ngIf='loginForm.controls["surname"]?.errors?.["required"]'
+              class='form-label__input-wrapper-error'>Обов'язкове поле</span>
+        <span *ngIf='loginForm.controls["surname"]?.errors?.["includeNotAvailableSymbols"]'
+              class='form-label__input-wrapper-error'>Фамілія може мати лише літери</span>
+      </div>
+    </label>
+
+    <label class='form-label'>
+      <p class='form-label__title'>Phone:</p>
+      <div class='form-label__input-wrapper'>
+        <input class='form-label__input-wrapper-input' formControlName='phone' type='tel' />
+        <span *ngIf='loginForm.controls["phone"]?.errors?.["required"]' class='form-label__input-wrapper-error'>Обов'язкове поле</span>
+        <span *ngIf='loginForm.controls["phone"]?.errors?.["includeNotAvailableSymbols"]'
+              class='form-label__input-wrapper-error'>Номер телефону має містити лише цифри</span>
+      </div>
+    </label>
+
+    <app-button
+      [attr.aria-disabled]='loginForm.invalid'
+      [buttonData]='buttonData'
+      [disabled]='loginForm.invalid'
+      class='submit-button'>
+    </app-button>
+  </form>
+</ngx-smart-modal>

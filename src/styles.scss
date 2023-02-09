@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import "ngx-smart-modal/ngx-smart-modal";
+@import "assets/icomoon/style.css";
+
+:root {
+  --white-color: #FFFFFF;
+  --black-color: #000000;
+  --light-orange-color: #E57C58;
+  --light-gray: #343536;
+  --white-background: #FFFFFF;
+
+  --black-border: #000000;
+}
+
+input {
+  all: unset;
+  box-sizing: border-box;
+  cursor: auto;
+}
+
+*, *:before, *:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+}
+
+
+body {
+  overflow-x: hidden;
+
+  &.home-page {
+
+    &:before {
+      content: url("~src/assets/images/background/home-background-lines.svg");
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -999;
+    }
+  }
+}
+
+.nsm-dialog {
+  width: 400px;
+}
+
+.nsm-content {
+  border-radius: 10px;
+}
+
+ul {
+  list-style-type: none;
+}

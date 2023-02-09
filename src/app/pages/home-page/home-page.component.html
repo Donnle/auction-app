@@ -1,0 +1,19 @@
+<main class='main'>
+  <div class='main-wrapper'>
+    <div class='main-content'>
+      <div class='main-content__header'>
+        <h1 class='main-content__header-title'>AuctioX</h1>
+        <form (ngSubmit)='onSubmit()' class='main-content__header-search search'>
+          <input [(ngModel)]='searchText' class='search-input' name='searchText' placeholder='Enter your text...'
+                 type='text'>
+          <button class='search-button'>
+            <span class='icon icon-search'></span>
+          </button>
+        </form>
+      </div>
+      <div class='main-content__products'>
+        <app-products [products]='products'></app-products>
+      </div>
+    </div>
+  </div>
+</main>
