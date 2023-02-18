@@ -3,7 +3,12 @@
     <div class='product-page-content'>
       <div class='product-page-content__product product'>
         <div class='product-image'>
-          <img [src]='productInfo.photos[0]' alt='main' class='product-image__img'>
+          <img *ngIf='productInfo.photos; else placeholderImage' [src]='productInfo.photos[0]' alt='main'
+               class='product-image__img'>
+          <ng-template #placeholderImage>
+            <img alt='main' class='product-image__img'
+                 src='https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'>
+          </ng-template>
         </div>
         <div class='product-content'>
           <h2 class='product-content__title'>{{productInfo.title}}</h2>
@@ -25,12 +30,14 @@
           <span
             class='product-content__days-left'><strong>До кінця аукціону:</strong> {{timeLeft | date:dateFormat}}</span>
           <div class='product-content__buttons'>
-            <app-button [attr.aria-disabled]='isButtonsDisabled'
-                        [buttonData]='buyNowData'
-                        [disabled]='isButtonsDisabled'></app-button>
-            <app-button [attr.aria-disabled]='isButtonsDisabled'
-                        [buttonData]='betData'
-                        [disabled]='isButtonsDisabled'></app-button>
+            <app-button
+              [attr.aria-disabled]='isButtonsDisabled'
+              [buttonData]='buyNowData'
+              [disabled]='isButtonsDisabled'></app-button>
+            <app-button
+              [attr.aria-disabled]='isButtonsDisabled'
+              [buttonData]='betData'
+              [disabled]='isButtonsDisabled'></app-button>
           </div>
         </div>
       </div>
@@ -38,4 +45,3 @@
     <app-products [products]='recommendationProducts'></app-products>
   </div>
 </div>
-

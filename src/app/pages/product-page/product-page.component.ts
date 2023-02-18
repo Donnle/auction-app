@@ -1,8 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { NgxSmartModalService } from 'ngx-smart-modal';
+import * as socketIo from 'socket.io-client';
 import { RequestsService } from '../../services/requests.service';
 import { ButtonData, Product, ProductResponse, ProductsResponse, Response } from '../../interfaces';
 import { AdditionalService } from '../../services/additional.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-product-page',
@@ -12,10 +15,12 @@ import { AdditionalService } from '../../services/additional.service';
 export class ProductPageComponent implements OnInit, OnDestroy {
   recommendationProducts: Product[];
   refreshTimeInterval: NodeJS.Timer;
+  productInfo$: BehaviorSubject<Product> = new BehaviorSubject<Product>({} as Product);
   productInfo: Product;
   timeLeft: Date;
   dateFormat: string;
   isButtonsDisabled: boolean = false;
+  clientSocket: any;
 
   buyNowData: ButtonData = {
     text: 'Купити зараз',
@@ -28,7 +33,13 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     size: 'large',
   };
 
-  constructor(private route: ActivatedRoute, private requestsService: RequestsService, private additionalService: AdditionalService, private router: Router) {
+  constructor(
+    private route: ActivatedRoute,
+    private requestsService: RequestsService,
+    private additionalService: AdditionalService,
+    private router: Router,
+    public ngxSmartModalService: NgxSmartModalService,
+  ) {
   }
 
   ngOnInit() {
@@ -38,7 +49,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
         this.requestsService.getProductInfo(productId).subscribe({
           next: ({ data, success }: Response<ProductResponse>) => {
             if (success) {
-              this.productInfo = data.product;
+              this.productInfo$.next(data.product);
               this.updateTimer(data.product);
               this.refreshTimeInterval = setInterval(() => this.updateTimer(data.product), 1000);
             }
@@ -57,6 +68,19 @@ export class ProductPageComponent implements OnInit, OnDestroy {
         }
       },
     });
+
+    this.clientSocket = socketIo.connect();
+    this.productInfo$.subscribe((productInfo) => {
+      this.productInfo = productInfo;
+      if (productInfo._id) {
+        this.clientSocket.emit('close');
+        this.clientSocket.emit('subscribe-to-bets', productInfo);
+        this.clientSocket.on('update-bet', (data: Product) => {
+          productInfo.currentBet = data.currentBet;
+          this.productInfo$.next(productInfo);
+        });
+      }
+    });
   }
 
   updateTimer(product: Product) {
@@ -70,6 +94,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.clientSocket.emit('close');
     clearInterval(this.refreshTimeInterval);
   }
 }
