@@ -28,6 +28,10 @@ class MarketService {
       product,
     };
   }
+
+  raiseCurrentBet(productId, raisedBet) {
+    return Product.findByIdAndUpdate(productId, { currentBet: raisedBet }, { new: true });
+  }
 }
 
 module.exports = new MarketService();

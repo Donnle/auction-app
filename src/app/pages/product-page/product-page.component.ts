@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { io, Socket } from 'socket.io-client';
+import { NgxSmartModalService } from 'ngx-smart-modal';
+import { MODALS, SOCKET_CHANNELS } from '../../enums';
 import { RequestsService } from '../../services/requests.service';
 import { ButtonData, Product, ProductResponse, ProductsResponse, Response } from '../../interfaces';
-import { NgxSmartModalService } from 'ngx-smart-modal';
-import { MODALS } from '../../enums';
 import { RaiseBetPopupComponent } from '../../components/popups/raise-bet-popup/raise-bet-popup.component';
+import { AuthService } from '../../services/auth.service';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-product-page',
@@ -16,6 +20,10 @@ export class ProductPageComponent implements OnInit {
   productInfo: Product;
   timeLeft: Date;
   dateFormat: string;
+  socket: Socket;
+  isLoggedIn: boolean = false;
+
+  @AutoUnsubscribe() isLoggedInSubs: Subscription;
 
   buyNowData: ButtonData = {
     text: 'Купити зараз',
@@ -32,6 +40,7 @@ export class ProductPageComponent implements OnInit {
     private route: ActivatedRoute,
     private requestsService: RequestsService,
     private router: Router,
+    private authService: AuthService,
     public ngxSmartModalService: NgxSmartModalService,
   ) {
   }
@@ -45,6 +54,10 @@ export class ProductPageComponent implements OnInit {
         this.getProductInfo(productId);
       },
     });
+
+    this.isLoggedInSubs = this.authService.isUserAuthorized$.subscribe((isLoggedIn: boolean) => {
+      this.isLoggedIn = isLoggedIn;
+    });
   }
 
   getProductInfo(productId: string) {
@@ -52,6 +65,7 @@ export class ProductPageComponent implements OnInit {
       next: ({ data, success }: Response<ProductResponse>) => {
         if (success) {
           this.productInfo = data.product;
+          this.configureSocket();
         }
       },
       error: async () => {
@@ -68,6 +82,38 @@ export class ProductPageComponent implements OnInit {
         }
       },
     });
+  }
+
+  changeBet(raisedBet: number) {
+    if (!this.isLoggedIn) {
+      return alert('Потрібно ввійти для того щоб підняти ставку');
+    }
+    
+    const data = {
+      productId: this.productInfo._id,
+      raisedBet,
+    };
+
+    this.productInfo.currentBet = raisedBet;
+    this.socket.emit(SOCKET_CHANNELS.RAISE_BET, data);
+  }
+
+  configureSocket() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+
+    this.socket = io();
+    this.socket.on(SOCKET_CHANNELS.CONNECT, () => {
+      console.log('Connected');
+
+      this.socket.emit(SOCKET_CHANNELS.REGISTER_SUBSCRIBER, this.productInfo);
+
+      this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productInfo) => {
+        this.productInfo.currentBet = productInfo.currentBet;
+      });
+    });
+
   }
 
   openRaiseBet() {
