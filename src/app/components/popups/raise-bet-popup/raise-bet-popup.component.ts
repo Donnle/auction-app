@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ButtonData, Product } from '../../../interfaces';
 import { AdditionalService } from '../../../services/additional.service';
 
@@ -8,7 +8,7 @@ import { AdditionalService } from '../../../services/additional.service';
   templateUrl: './raise-bet-popup.component.html',
   styleUrls: ['./raise-bet-popup.component.scss'],
 })
-export class RaiseBetPopupComponent implements OnInit {
+export class RaiseBetPopupComponent implements OnChanges {
   raiseBetForm: FormGroup;
   dateFormat: string;
   buttonData: ButtonData = {
@@ -23,13 +23,18 @@ export class RaiseBetPopupComponent implements OnInit {
   constructor(public additionalService: AdditionalService) {
   }
 
-  onSubmit() {
-    this.changeBet.emit(this.raiseBetForm.value.raisedBet);
+  // Change form when "@Input() productInfo: Product" change
+  ngOnChanges(changes: SimpleChanges): void {
+    this.raiseBetForm = new FormGroup({
+      raisedBet: new FormControl(0, [
+        Validators.min(this.productInfo.currentBet + this.productInfo.minStep),
+        Validators.max(this.productInfo.buyNowPrice),
+      ]),
+    });
   }
 
-  ngOnInit(): void {
-    this.raiseBetForm = new FormGroup({
-      raisedBet: new FormControl('', []),
-    });
+  onSubmit() {
+    this.changeBet.emit(this.raiseBetForm.value.raisedBet);
+    this.raiseBetForm.reset();
   }
 }
