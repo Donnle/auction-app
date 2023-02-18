@@ -18,6 +18,7 @@ import { ProductsComponent } from './components/products/products.component';
 import { ProductPageComponent } from './pages/product-page/product-page.component';
 import { ProductComponent } from './components/product/product.component';
 import { AuthGuard } from './guards/auth.guard';
+import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,14 @@ import { AuthGuard } from './guards/auth.guard';
       {
         path: 'product/:productId',
         component: ProductPageComponent,
+      },
+      {
+        path: '**',
+        component: NotFoundPageComponent,
+      },
+      {
+        path: 'not-found',
+        component: NotFoundPageComponent,
       },
     ]),
     ReactiveFormsModule,

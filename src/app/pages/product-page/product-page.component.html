@@ -30,14 +30,8 @@
           <span
             class='product-content__days-left'><strong>До кінця аукціону:</strong> {{timeLeft | date:dateFormat}}</span>
           <div class='product-content__buttons'>
-            <app-button
-              [attr.aria-disabled]='isButtonsDisabled'
-              [buttonData]='buyNowData'
-              [disabled]='isButtonsDisabled'></app-button>
-            <app-button
-              [attr.aria-disabled]='isButtonsDisabled'
-              [buttonData]='betData'
-              [disabled]='isButtonsDisabled'></app-button>
+            <app-button [buttonData]='buyNowData'></app-button>
+            <app-button [buttonData]='betData'></app-button>
           </div>
         </div>
       </div>
