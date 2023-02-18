@@ -5,5 +5,6 @@ export enum LOCAL_STORAGE {
 
 export enum MODALS {
   LOGIN = 'login',
-  REGISTRATION = 'registration'
+  REGISTRATION = 'registration',
+  RAISE_BET = 'raise-bet'
 }
