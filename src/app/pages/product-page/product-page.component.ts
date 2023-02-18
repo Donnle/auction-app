@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { io, Socket } from 'socket.io-client';
+import { NgxSmartModalService } from 'ngx-smart-modal';
+import { MODALS, SOCKET_CHANNELS } from '../../enums';
 import { RequestsService } from '../../services/requests.service';
 import { ButtonData, Product, ProductResponse, ProductsResponse, Response } from '../../interfaces';
-import { NgxSmartModalService } from 'ngx-smart-modal';
-import { MODALS } from '../../enums';
 import { RaiseBetPopupComponent } from '../../components/popups/raise-bet-popup/raise-bet-popup.component';
 
 @Component({
@@ -16,6 +17,7 @@ export class ProductPageComponent implements OnInit {
   productInfo: Product;
   timeLeft: Date;
   dateFormat: string;
+  socket: Socket;
 
   buyNowData: ButtonData = {
     text: 'Купити зараз',
@@ -52,6 +54,7 @@ export class ProductPageComponent implements OnInit {
       next: ({ data, success }: Response<ProductResponse>) => {
         if (success) {
           this.productInfo = data.product;
+          this.configureSocket();
         }
       },
       error: async () => {
@@ -68,6 +71,34 @@ export class ProductPageComponent implements OnInit {
         }
       },
     });
+  }
+
+  changeBet(raisedBet: number) {
+    const data = {
+      productId: this.productInfo._id,
+      raisedBet,
+    };
+
+    this.productInfo.currentBet = raisedBet;
+    this.socket.emit(SOCKET_CHANNELS.RAISE_BET, data);
+  }
+
+  configureSocket() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+
+    this.socket = io();
+    this.socket.on(SOCKET_CHANNELS.CONNECT, () => {
+      console.log('Connected');
+
+      this.socket.emit(SOCKET_CHANNELS.REGISTER_SUBSCRIBER, this.productInfo);
+
+      this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productInfo) => {
+        this.productInfo.currentBet = productInfo.currentBet;
+      });
+    });
+
   }
 
   openRaiseBet() {

@@ -8,3 +8,10 @@ export enum MODALS {
   REGISTRATION = 'registration',
   RAISE_BET = 'raise-bet'
 }
+
+export enum SOCKET_CHANNELS {
+  CONNECT = 'connect',
+  CHANGE_CURRENT_BET = 'change-current-bet',
+  REGISTER_SUBSCRIBER = 'register-subscriber',
+  RAISE_BET = 'raise-bet'
+}

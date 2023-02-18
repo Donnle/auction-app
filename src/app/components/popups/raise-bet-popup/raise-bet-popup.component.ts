@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ButtonData, Product } from '../../../interfaces';
 import { AdditionalService } from '../../../services/additional.service';
@@ -20,13 +20,13 @@ export class RaiseBetPopupComponent implements OnInit, AfterViewInit {
     size: 'medium',
   };
 
-  @ViewChild('raiseBet') raiseBetModal: any;
+  @Output() changeBet = new EventEmitter();
 
   constructor(public additionalService: AdditionalService, private ngxSmartModalService: NgxSmartModalService) {
   }
 
   onSubmit() {
-    console.log(this.raiseBetForm.value);
+    this.changeBet.emit(this.raiseBetForm.value.raisedBet);
   }
 
   ngOnInit(): void {

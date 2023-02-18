@@ -5,6 +5,8 @@ const cors = require('cors');
 const AuthRouter = require('./router/Auth-router');
 const UserRouter = require('./router/User-router');
 const MarketRouter = require('./router/Market-router');
+const Market = require('./services/Market-service');
+const socket = require('socket.io')(6464);
 
 const PORT = 8989;
 
@@ -26,8 +28,48 @@ const start = async () => {
 };
 
 try {
-  start();
+  start().then(() => {
+    configureSocket();
+  });
 } catch (e) {
   console.log(e);
 }
 
+const configureSocket = () => {
+  let storageSubscribers = {};
+
+  const unsubscribeFromChangeCurrentBetObserve = (clientId) => {
+    return Object.entries(storageSubscribers).reduce((acc, [productId, clientIds]) => {
+      acc[productId] = clientIds.filter((subscribedClientId) => subscribedClientId !== clientId);
+      return acc;
+    }, {});
+  };
+
+  socket.on('connection', (client) => {
+    console.log('success connected: ', client.id);
+
+    client.on('register-subscriber', (product) => {
+      if (!storageSubscribers[product._id]) {
+        storageSubscribers[product._id] = [];
+      }
+      storageSubscribers[product._id].push(client.id);
+      console.log(`User with client id: ${client.id} success registered`);
+      console.log('Subscribed users: ', storageSubscribers);
+    });
+
+    client.on('raise-bet', async (data) => {
+      const { productId, raisedBet } = data;
+      const updatedProduct = await Market.raiseCurrentBet(productId, raisedBet);
+      storageSubscribers[productId].forEach((userId) => {
+        client.to(userId).emit('change-current-bet', updatedProduct);
+      });
+      console.log(`Update message was sent to all subscribed users`);
+    });
+
+    client.on('disconnect', () => {
+      storageSubscribers = unsubscribeFromChangeCurrentBetObserve(client.id);
+      console.log(`User with client id: ${client.id} disconnected`);
+      console.log('Subscribed users: ', storageSubscribers);
+    });
+  });
+};
