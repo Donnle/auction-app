@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { RequestsService } from '../../services/requests.service';
 import { ButtonData, Product, ProductResponse, ProductsResponse, Response } from '../../interfaces';
@@ -9,13 +9,11 @@ import { AdditionalService } from '../../services/additional.service';
   templateUrl: './product-page.component.html',
   styleUrls: ['./product-page.component.scss'],
 })
-export class ProductPageComponent implements OnInit, OnDestroy {
+export class ProductPageComponent implements OnInit {
   recommendationProducts: Product[];
-  refreshTimeInterval: NodeJS.Timer;
   productInfo: Product;
   timeLeft: Date;
   dateFormat: string;
-  isButtonsDisabled: boolean = false;
 
   buyNowData: ButtonData = {
     text: 'Купити зараз',
@@ -39,8 +37,6 @@ export class ProductPageComponent implements OnInit, OnDestroy {
           next: ({ data, success }: Response<ProductResponse>) => {
             if (success) {
               this.productInfo = data.product;
-              this.updateTimer(data.product);
-              this.refreshTimeInterval = setInterval(() => this.updateTimer(data.product), 1000);
             }
           },
           error: async () => {
@@ -57,19 +53,5 @@ export class ProductPageComponent implements OnInit, OnDestroy {
         }
       },
     });
-  }
-
-  updateTimer(product: Product) {
-    this.timeLeft = this.additionalService.calculateDaysLeft(product.endDate);
-    this.dateFormat = this.additionalService.formatPipeDate(this.timeLeft);
-
-    if (!this.dateFormat) {
-      this.isButtonsDisabled = true;
-      clearInterval(this.refreshTimeInterval);
-    }
-  }
-
-  ngOnDestroy() {
-    clearInterval(this.refreshTimeInterval);
   }
 }
