@@ -45,6 +45,13 @@
   gap: 10px;
   cursor: pointer;
 
+  &-balance {
+    font-size: 2.4rem;
+    line-height: 1.2em;
+    color: var(--white-color);
+    padding-right: 15px;
+  }
+
   &-name {
     font-size: 2.4rem;
     line-height: 1.2em;

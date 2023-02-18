@@ -11,5 +11,6 @@ module.exports = class UserDtos {
     this.surname = model.surname;
     this.phone = model.phone;
     this.email = model.email;
+    this.balance = model.balance;
   }
 };

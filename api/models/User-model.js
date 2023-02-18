@@ -23,6 +23,10 @@ const UserModel = new Schema({
     unique: true,
     required: true,
   },
+  balance: {
+    type: Number,
+    default: 0,
+  },
   profileImage: {
     type: String,
   },
