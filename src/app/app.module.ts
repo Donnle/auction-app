@@ -18,7 +18,7 @@ import { ProductsComponent } from './components/products/products.component';
 import { ProductPageComponent } from './pages/product-page/product-page.component';
 import { ProductComponent } from './components/product/product.component';
 import { AuthGuard } from './guards/auth.guard';
-import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
+import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +34,6 @@ import { NotFoundPageComponent } from './not-found-page/not-found-page.component
     ProductsComponent,
     ProductPageComponent,
     ProductComponent,
-    NotFoundPageComponent,
   ],
   imports: [
     BrowserModule,

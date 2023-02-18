@@ -1,21 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { RequestsService } from '../../services/requests.service';
 import { ButtonData, Product, ProductResponse, ProductsResponse, Response } from '../../interfaces';
-import { AdditionalService } from '../../services/additional.service';
+import { RequestsService } from '../../services/requests.service';
 
 @Component({
   selector: 'app-product-page',
   templateUrl: './product-page.component.html',
   styleUrls: ['./product-page.component.scss'],
 })
-export class ProductPageComponent implements OnInit, OnDestroy {
+export class ProductPageComponent implements OnInit {
   recommendationProducts: Product[];
-  refreshTimeInterval: NodeJS.Timer;
   productInfo: Product;
   timeLeft: Date;
   dateFormat: string;
-  isButtonsDisabled: boolean = false;
 
   buyNowData: ButtonData = {
     text: 'Купити зараз',
@@ -28,29 +25,39 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     size: 'large',
   };
 
-  constructor(private route: ActivatedRoute, private requestsService: RequestsService, private additionalService: AdditionalService, private router: Router) {
+  constructor(
+    private route: ActivatedRoute,
+    private requestsService: RequestsService,
+    private router: Router,
+  ) {
   }
 
   ngOnInit() {
+    this.getRecommendationProducts();
+
     this.route.params.subscribe({
       next: (params: Params) => {
         const productId = params['productId'];
-        this.requestsService.getProductInfo(productId).subscribe({
-          next: ({ data, success }: Response<ProductResponse>) => {
-            if (success) {
-              this.productInfo = data.product;
-              this.updateTimer(data.product);
-              this.refreshTimeInterval = setInterval(() => this.updateTimer(data.product), 1000);
-            }
-          },
-          error: async () => {
-            await this.router.navigate(['not-found']);
-          },
-        });
+        this.getProductInfo(productId);
       },
     });
+  }
 
-    this.requestsService.getProducts(1, 4).subscribe({
+  getProductInfo(productId: string) {
+    this.requestsService.getProductInfo(productId).subscribe({
+      next: ({ data, success }: Response<ProductResponse>) => {
+        if (success) {
+          this.productInfo = data.product;
+        }
+      },
+      error: async () => {
+        await this.router.navigate(['not-found']);
+      },
+    });
+  }
+
+  getRecommendationProducts(page: number = 1, count: number = 4) {
+    this.requestsService.getProducts(page, count).subscribe({
       next: ({ data, success }: Response<ProductsResponse>) => {
         if (success) {
           this.recommendationProducts = data.products;
@@ -59,17 +66,4 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateTimer(product: Product) {
-    this.timeLeft = this.additionalService.calculateDaysLeft(product.endDate);
-    this.dateFormat = this.additionalService.formatPipeDate(this.timeLeft);
-
-    if (!this.dateFormat) {
-      this.isButtonsDisabled = true;
-      clearInterval(this.refreshTimeInterval);
-    }
-  }
-
-  ngOnDestroy() {
-    clearInterval(this.refreshTimeInterval);
-  }
 }

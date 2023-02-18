@@ -1,9 +1,9 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { RequestsService } from '../../services/requests.service';
-import { Pagination, Product, ProductsResponse, Response } from '../../interfaces';
 import { debounceTime, fromEvent, Subscription } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
+import { Pagination, Product } from '../../interfaces';
+import { RequestsService } from '../../services/requests.service';
 
 @Component({
   selector: 'app-home-page',
@@ -14,13 +14,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   pagination: Pagination;
   searchText: string;
-
-  page: number = 1;
-  count: number = 8;
-
+  currentPage: number = 1;
   @AutoUnsubscribe() loadProductsSubscription: Subscription;
 
-  loadProducts: (query?: string) => void;
+  private readonly COUNT_PRODUCTS_ON_PAGE: number = 8;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -29,54 +26,33 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loadProducts = this.storeSearchData();
-
-    this.loadProducts();
     this.document.body.classList.add('home-page');
 
-    this.loadProductsSubscription = fromEvent(window.document, 'scroll').pipe(debounceTime(1500)).subscribe({
-      next: () => {
-        this.loadProducts();
-      },
-    });
+    this.loadProducts(this.searchText);
+    this.loadProductsSubscription = fromEvent(window.document, 'scroll')
+      .pipe(debounceTime(1500))
+      .subscribe({
+        next: () => {
+          if (this.currentPage > this.pagination?.countPages && this.products.length > 0) {
+            return;
+          }
+          this.loadProducts(this.searchText);
+        },
+      });
   }
 
   onSubmit() {
-    this.resetProductData();
+    this.products = [];
+    this.currentPage = 1;
     this.loadProducts(this.searchText);
   }
 
-  storeSearchData(): (query?: string) => void {
-    const searchData: string[] = [''];
-
-    return (query?: string) => {
-      if (this.page > this.pagination?.countPages) {
-        return;
-      }
-
-      if (query) {
-        searchData.push(query);
-      }
-
-      const lastSearchText = searchData[searchData.length - 1];
-
-      this.requestsService.getProducts(this.page, this.count, lastSearchText).subscribe({
-        next: ({ data, success }: Response<ProductsResponse>) => {
-          if (success) {
-            if (data.pagination.countProducts > this.page) {
-              this.products.push(...data.products);
-              this.pagination = data.pagination;
-              this.page += 1;
-            }
-          }
-        },
-      });
-    };
-  }
-
-  resetProductData() {
-    this.products = [];
-    this.page = 1;
+  loadProducts(query: string = '') {
+    this.requestsService.getProducts(this.currentPage, this.COUNT_PRODUCTS_ON_PAGE, query).subscribe(({ data }) => {
+      this.products.push(...data.products);
+      this.pagination = data.pagination;
+      this.currentPage += 1;
+    });
   }
 
   ngOnDestroy() {
