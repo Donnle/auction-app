@@ -1,8 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { ButtonData } from '../../../interfaces';
-import { NgxSmartModalService } from 'ngx-smart-modal';
 
 @Component({
   selector: 'app-login-popup',
@@ -19,7 +18,7 @@ export class LoginPopupComponent {
 
   @ViewChild('login') loginModal: any;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private ngxSmartModalService: NgxSmartModalService) {
+  constructor(private authService: AuthService) {
     this.loginForm = new FormGroup({
       email: new FormControl('', [
         Validators.required,
@@ -31,10 +30,7 @@ export class LoginPopupComponent {
   }
 
   onSubmit(): void {
-    this.authService.login({
-      email: this.loginForm.get('email')?.value,
-      password: this.loginForm.get('password')?.value,
-    }).subscribe({
+    this.authService.login(this.loginForm.value).subscribe({
       next: () => this.loginModal.close(),
       error: ({ error }) => {
         console.log('Error: ', error.data.message);

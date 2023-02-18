@@ -19,6 +19,7 @@ import { ProductPageComponent } from './pages/product-page/product-page.componen
 import { ProductComponent } from './components/product/product.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
+import { RaiseBetPopupComponent } from './components/popups/raise-bet-popup/raise-bet-popup.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { NotFoundPageComponent } from './not-found-page/not-found-page.component
     ProductPageComponent,
     ProductComponent,
     NotFoundPageComponent,
+    RaiseBetPopupComponent,
   ],
   imports: [
     BrowserModule,
