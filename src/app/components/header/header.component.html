@@ -24,6 +24,7 @@
       <ng-template #authorizedUser>
         <div (clickOutside)='this.isMenuOpened = false'>
           <div (click)='handleOpenMenu()' class='header-content__user user'>
+            <span class='user-balance'>{{userData.balance}} ₴</span>
             <span class='user-name'>{{userData.name}}</span>
             <img *ngIf='userData.profileImage' [src]='userData.profileImage' alt='user logo' class='user-logo'>
           </div>

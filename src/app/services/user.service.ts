@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Response, UserData } from '../interfaces';
-import { RequestsService } from './requests.service';
+import { UserData } from '../interfaces';
 import { LOCAL_STORAGE } from '../enums';
 
 @Injectable({
@@ -10,21 +9,8 @@ import { LOCAL_STORAGE } from '../enums';
 export class UserService {
   userData$: BehaviorSubject<UserData> = new BehaviorSubject<UserData>({} as UserData);
 
-  constructor(private requestService: RequestsService) {
-  }
-
   get userId(): string {
     return this.userData$.getValue().id;
-  }
-
-  getUserData(): void {
-    this.requestService.getUserData(this.userId).subscribe({
-      next: ({ data, success }: Response<UserData>) => {
-        if (success) {
-          this.saveUserData(data);
-        }
-      },
-    });
   }
 
   saveUserData(userData: UserData) {
