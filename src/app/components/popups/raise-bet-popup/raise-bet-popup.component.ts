@@ -1,18 +1,15 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ButtonData, Product } from '../../../interfaces';
 import { AdditionalService } from '../../../services/additional.service';
-import { MODALS } from '../../../enums';
-import { NgxSmartModalService } from 'ngx-smart-modal';
 
 @Component({
   selector: 'app-raise-bet-popup',
   templateUrl: './raise-bet-popup.component.html',
   styleUrls: ['./raise-bet-popup.component.scss'],
 })
-export class RaiseBetPopupComponent implements OnInit, AfterViewInit {
+export class RaiseBetPopupComponent implements OnInit {
   raiseBetForm: FormGroup;
-  productInfo: Product;
   dateFormat: string;
   buttonData: ButtonData = {
     text: 'Підняти ставку',
@@ -21,8 +18,9 @@ export class RaiseBetPopupComponent implements OnInit, AfterViewInit {
   };
 
   @Output() changeBet = new EventEmitter();
+  @Input() productInfo: Product;
 
-  constructor(public additionalService: AdditionalService, private ngxSmartModalService: NgxSmartModalService) {
+  constructor(public additionalService: AdditionalService) {
   }
 
   onSubmit() {
@@ -32,12 +30,6 @@ export class RaiseBetPopupComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.raiseBetForm = new FormGroup({
       raisedBet: new FormControl('', []),
-    });
-  }
-
-  ngAfterViewInit(): void {
-    this.ngxSmartModalService.getModal(MODALS.RAISE_BET).onOpen.subscribe((modal) => {
-      this.productInfo = modal.getData();
     });
   }
 }
