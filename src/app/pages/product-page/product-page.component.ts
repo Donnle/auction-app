@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { RequestsService } from '../../services/requests.service';
 import { ButtonData, Product, ProductResponse, ProductsResponse, Response } from '../../interfaces';
+import { NgxSmartModalService } from 'ngx-smart-modal';
+import { MODALS } from '../../enums';
+import { RaiseBetPopupComponent } from '../../components/popups/raise-bet-popup/raise-bet-popup.component';
 
 @Component({
   selector: 'app-product-page',
@@ -29,6 +32,7 @@ export class ProductPageComponent implements OnInit {
     private route: ActivatedRoute,
     private requestsService: RequestsService,
     private router: Router,
+    public ngxSmartModalService: NgxSmartModalService,
   ) {
   }
 
@@ -64,5 +68,10 @@ export class ProductPageComponent implements OnInit {
         }
       },
     });
+  }
+
+  openRaiseBet() {
+    this.ngxSmartModalService.setModalData(this.productInfo, MODALS.RAISE_BET);
+    this.ngxSmartModalService.create(MODALS.RAISE_BET, RaiseBetPopupComponent).open();
   }
 }
