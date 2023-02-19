@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, Subscription } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
 import { AuthService } from './auth.service';
@@ -32,17 +32,19 @@ export class ProductService {
     this.productData$.next(data);
   }
 
-  getProductData(productId: string) {
-    this.requestsService.getProductInfo(productId).subscribe({
-      next: ({ data, success }: Response<ProductResponse>) => {
-        if (success) {
-          this.productData$.next(data.product);
+  getProductData(productId: string): Observable<void | Response<ProductResponse>> {
+    return this.requestsService.getProductInfo(productId).pipe(map(
+      (response: Response<ProductResponse>) => {
+        if (response.success) {
+          this.productData$.next(response.data.product);
         }
+
+        return response;
       },
-      error: async () => {
+    ), catchError(async () => {
         await this.router.navigate(['not-found']);
       },
-    });
+    ));
   }
 
   changeBet(raisedBet: number) {
@@ -61,18 +63,28 @@ export class ProductService {
 
   configureSocket() {
     if (this.socket) {
-      this.socket.disconnect();
+      this.disconnectSocket();
     }
 
     this.socket = io();
     this.socket.on(SOCKET_CHANNELS.CONNECT, () => {
-      console.log('Connected');
+      const currentProductId = this.productData._id;
+
+      console.log('Connected to product: ', currentProductId);
 
       this.socket.emit(SOCKET_CHANNELS.REGISTER_SUBSCRIBER, this.productData);
 
       this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productInfo) => {
         this.productData = productInfo;
       });
+
+      this.socket.on('disconnect', () => {
+        console.log('Disconnected from product: ', currentProductId);
+      });
     });
+  }
+
+  disconnectSocket() {
+    this.socket.disconnect();
   }
 }

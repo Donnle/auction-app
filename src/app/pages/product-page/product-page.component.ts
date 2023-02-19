@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Socket } from 'socket.io-client';
@@ -15,7 +15,7 @@ import { RaiseBetPopupComponent } from '../../components/popups/raise-bet-popup/
   templateUrl: './product-page.component.html',
   styleUrls: ['./product-page.component.scss'],
 })
-export class ProductPageComponent implements OnInit {
+export class ProductPageComponent implements OnInit, OnDestroy {
   recommendationProducts: Product[];
   productData: Product;
   timeLeft: Date;
@@ -50,8 +50,11 @@ export class ProductPageComponent implements OnInit {
     this.route.params.subscribe({
       next: (params: Params) => {
         const productId = params['productId'];
-        this.productService.getProductData(productId);
-        this.productService.configureSocket();
+        this.productService.getProductData(productId).subscribe({
+          next: () => {
+            this.productService.configureSocket();
+          },
+        });
       },
     });
 
@@ -72,5 +75,9 @@ export class ProductPageComponent implements OnInit {
 
   openRaiseBet() {
     this.ngxSmartModalService.create(MODALS.RAISE_BET, RaiseBetPopupComponent).open();
+  }
+
+  ngOnDestroy() {
+    this.productService.disconnectSocket()
   }
 }
