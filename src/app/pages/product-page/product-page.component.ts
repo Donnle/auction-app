@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { io, Socket } from 'socket.io-client';
-import { NgxSmartModalService } from 'ngx-smart-modal';
-import { MODALS, SOCKET_CHANNELS } from '../../enums';
-import { RequestsService } from '../../services/requests.service';
-import { ButtonData, Product, ProductResponse, ProductsResponse, Response } from '../../interfaces';
-import { RaiseBetPopupComponent } from '../../components/popups/raise-bet-popup/raise-bet-popup.component';
-import { AuthService } from '../../services/auth.service';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
+import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Socket } from 'socket.io-client';
+import { NgxSmartModalService } from 'ngx-smart-modal';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
+import { MODALS } from '../../enums';
+import { ButtonData, Product, ProductsResponse, Response } from '../../interfaces';
+import { RequestsService } from '../../services/requests.service';
+import { ProductService } from '../../services/product.service';
+import { RaiseBetPopupComponent } from '../../components/popups/raise-bet-popup/raise-bet-popup.component';
 
 @Component({
   selector: 'app-product-page',
@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
 })
 export class ProductPageComponent implements OnInit {
   recommendationProducts: Product[];
-  productInfo: Product;
+  productData: Product;
   timeLeft: Date;
   dateFormat: string;
   socket: Socket;
@@ -39,9 +39,8 @@ export class ProductPageComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private requestsService: RequestsService,
-    private router: Router,
-    private authService: AuthService,
-    public ngxSmartModalService: NgxSmartModalService,
+    private ngxSmartModalService: NgxSmartModalService,
+    public productService: ProductService,
   ) {
   }
 
@@ -51,26 +50,13 @@ export class ProductPageComponent implements OnInit {
     this.route.params.subscribe({
       next: (params: Params) => {
         const productId = params['productId'];
-        this.getProductInfo(productId);
+        this.productService.getProductData(productId);
+        this.productService.configureSocket();
       },
     });
 
-    this.isLoggedInSubs = this.authService.isUserAuthorized$.subscribe((isLoggedIn: boolean) => {
-      this.isLoggedIn = isLoggedIn;
-    });
-  }
-
-  getProductInfo(productId: string) {
-    this.requestsService.getProductInfo(productId).subscribe({
-      next: ({ data, success }: Response<ProductResponse>) => {
-        if (success) {
-          this.productInfo = data.product;
-          this.configureSocket();
-        }
-      },
-      error: async () => {
-        await this.router.navigate(['not-found']);
-      },
+    this.productService.productData$.subscribe((productData: Product) => {
+      this.productData = productData;
     });
   }
 
@@ -84,40 +70,7 @@ export class ProductPageComponent implements OnInit {
     });
   }
 
-  changeBet(raisedBet: number) {
-    if (!this.isLoggedIn) {
-      return alert('Потрібно ввійти для того щоб підняти ставку');
-    }
-    
-    const data = {
-      productId: this.productInfo._id,
-      raisedBet,
-    };
-
-    this.productInfo.currentBet = raisedBet;
-    this.socket.emit(SOCKET_CHANNELS.RAISE_BET, data);
-  }
-
-  configureSocket() {
-    if (this.socket) {
-      this.socket.disconnect();
-    }
-
-    this.socket = io();
-    this.socket.on(SOCKET_CHANNELS.CONNECT, () => {
-      console.log('Connected');
-
-      this.socket.emit(SOCKET_CHANNELS.REGISTER_SUBSCRIBER, this.productInfo);
-
-      this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productInfo) => {
-        this.productInfo.currentBet = productInfo.currentBet;
-      });
-    });
-
-  }
-
   openRaiseBet() {
-    this.ngxSmartModalService.setModalData(this.productInfo, MODALS.RAISE_BET);
     this.ngxSmartModalService.create(MODALS.RAISE_BET, RaiseBetPopupComponent).open();
   }
 }

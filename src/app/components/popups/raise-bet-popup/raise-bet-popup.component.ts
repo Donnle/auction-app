@@ -1,15 +1,17 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ButtonData, Product } from '../../../interfaces';
 import { AdditionalService } from '../../../services/additional.service';
+import { ProductService } from '../../../services/product.service';
 
 @Component({
   selector: 'app-raise-bet-popup',
   templateUrl: './raise-bet-popup.component.html',
   styleUrls: ['./raise-bet-popup.component.scss'],
 })
-export class RaiseBetPopupComponent implements OnChanges {
+export class RaiseBetPopupComponent implements OnInit {
   raiseBetForm: FormGroup;
+  productData: Product;
   dateFormat: string;
   buttonData: ButtonData = {
     text: 'Підняти ставку',
@@ -18,18 +20,21 @@ export class RaiseBetPopupComponent implements OnChanges {
   };
 
   @Output() changeBet = new EventEmitter();
-  @Input() productInfo: Product;
 
-  constructor(public additionalService: AdditionalService) {
+  constructor(public additionalService: AdditionalService, private productService: ProductService) {
   }
 
-  // Change form when "@Input() productInfo: Product" change
-  ngOnChanges(changes: SimpleChanges): void {
-    this.raiseBetForm = new FormGroup({
-      raisedBet: new FormControl(0, [
-        Validators.min(this.productInfo.currentBet + this.productInfo.minStep),
-        Validators.max(this.productInfo.buyNowPrice),
-      ]),
+  ngOnInit(): void {
+    this.productService.productData$.subscribe((productData) => {
+      this.productData = productData;
+
+      this.raiseBetForm = new FormGroup({
+        raisedBet: new FormControl(0, [
+          Validators.required,
+          Validators.min(this.productData.currentBet + this.productData.minStep),
+          Validators.max(this.productData.buyNowPrice),
+        ]),
+      });
     });
   }
 

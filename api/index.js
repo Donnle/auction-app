@@ -60,7 +60,7 @@ const configureSocket = () => {
     client.on('raise-bet', async (data) => {
       const { productId, raisedBet } = data;
       const updatedProduct = await Market.raiseCurrentBet(productId, raisedBet);
-      storageSubscribers[productId].forEach((userId) => {
+      storageSubscribers[productId]?.forEach((userId) => {
         client.to(userId).emit('change-current-bet', updatedProduct);
       });
       console.log(`Update message was sent to all subscribed users`);
