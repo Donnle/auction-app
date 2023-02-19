@@ -5,8 +5,16 @@ import { io, Socket } from 'socket.io-client';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
 import { AuthService } from './auth.service';
 import { RequestsService } from './requests.service';
-import { Product, ProductResponse, Response } from '../interfaces';
+import {
+  BalanceResponse,
+  Product,
+  ProductResponse,
+  RaiseBetData,
+  RaiseBetResponse,
+  Response,
+} from '../interfaces';
 import { SOCKET_CHANNELS } from '../enums';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +26,12 @@ export class ProductService {
 
   @AutoUnsubscribe() isLoggedInSubs: Subscription;
 
-  constructor(private requestsService: RequestsService, private router: Router, private authService: AuthService) {
+  constructor(
+    private requestsService: RequestsService,
+    private authService: AuthService,
+    private userService: UserService,
+    private router: Router,
+  ) {
     this.isLoggedInSubs = this.authService.isUserAuthorized$.subscribe((isLoggedIn: boolean) => {
       this.isLoggedIn = isLoggedIn;
     });
@@ -52,13 +65,22 @@ export class ProductService {
       return alert('Потрібно ввійти для того щоб підняти ставку');
     }
 
-    const data = {
-      productId: this.productData._id,
-      raisedBet,
-    };
+    if (this.userService.userData.balance < raisedBet) {
+      return alert('Недостатньо коштів на балансі, якщо ви впевнені що це не так, перезавантажте сторінку');
+    }
 
-    this.productData = { ...this.productData, currentBet: raisedBet };
-    this.socket.emit(SOCKET_CHANNELS.RAISE_BET, data);
+    this.requestsService.checkUserBalance().subscribe({
+      next: (response: Response<BalanceResponse>) => {
+        if (response.data.balance > raisedBet) {
+          this.raiseBet(raisedBet);
+        } else {
+          alert('Недостатньо коштів на балансі, якщо ви впевнені що це не так, перезавантажте сторінку');
+        }
+      },
+      error: () => {
+        alert('Щось пішло не так, оновіть сторінку або зверніться до нас');
+      },
+    });
   }
 
   configureSocket() {
@@ -74,11 +96,12 @@ export class ProductService {
 
       this.socket.emit(SOCKET_CHANNELS.REGISTER_SUBSCRIBER, this.productData);
 
-      this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productInfo) => {
-        this.productData = productInfo;
+      this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productData: Response<ProductResponse>) => {
+        this.productData = productData.data.product;
+        this.userService.refreshUserData();
       });
 
-      this.socket.on('disconnect', () => {
+      this.socket.on(SOCKET_CHANNELS.DISCONNECT, () => {
         console.log('Disconnected from product: ', currentProductId);
       });
     });
@@ -86,5 +109,19 @@ export class ProductService {
 
   disconnectSocket() {
     this.socket.disconnect();
+  }
+
+  private raiseBet(raisedBet: number) {
+    const data: RaiseBetData = {
+      productId: this.productData._id,
+      raisedBet,
+    };
+
+    this.requestsService.raiseBet(data).subscribe({
+      next: (response: Response<RaiseBetResponse>) => {
+        this.userService.userData = response.data.userData;
+        this.socket.emit(SOCKET_CHANNELS.RAISE_BET, data);
+      },
+    });
   }
 }

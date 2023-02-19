@@ -89,3 +89,17 @@ export interface ProductsResponse {
 export interface ProductResponse {
   product: Product;
 }
+
+export interface BalanceResponse {
+  balance: number;
+}
+
+export interface RaiseBetData {
+  productId: string;
+  raisedBet: number;
+}
+
+export interface RaiseBetResponse {
+  product: Product;
+  userData: UserData;
+}

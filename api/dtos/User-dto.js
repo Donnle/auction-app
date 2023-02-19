@@ -4,6 +4,7 @@ module.exports = class UserDtos {
   phone;
   name;
   surname;
+  balance;
 
   constructor(model) {
     this.id = model._id;

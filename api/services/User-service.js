@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const UserModel = require('../models/User-model');
 const TokenService = require('./Tokens-service');
 const UserDto = require('../dtos/User-dto');
+const tokenService = require('./Tokens-service');
 
 class UserService {
   async registration(name, surname, email, phone, password) {
@@ -76,9 +77,17 @@ class UserService {
     return new UserDto(newUserData);
   }
 
-  async getUserDataById(id) {
-    const userData = await UserModel.findById(id);
+  async getUserData(accessToken) {
+    const userId = await TokenService.validateAccessToken(accessToken).id;
+    const userData = await UserModel.findById(userId);
     return new UserDto(userData);
+  }
+
+  async getUserBalance(accessToken) {
+    const { id } = tokenService.validateAccessToken(accessToken);
+    const userData = await UserModel.findById(id);
+
+    return new UserDto(userData).balance;
   }
 }
 

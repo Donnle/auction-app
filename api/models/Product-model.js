@@ -29,6 +29,11 @@ const Product = new Schema({
     required: true,
     type: Array,
   },
+  currentBetUser: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    default: undefined,
+  },
 });
 
 module.exports = model('product', Product);

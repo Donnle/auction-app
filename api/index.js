@@ -5,6 +5,7 @@ const cors = require('cors');
 const AuthRouter = require('./router/Auth-router');
 const UserRouter = require('./router/User-router');
 const MarketRouter = require('./router/Market-router');
+const ProductRouter = require('./router/Product-router');
 const Market = require('./services/Market-service');
 const socket = require('socket.io')(6464);
 
@@ -19,6 +20,7 @@ app.use(cors());
 app.use('/api/auth', AuthRouter);
 app.use('/api/user', UserRouter);
 app.use('/api/market', MarketRouter);
+app.use('/api/product', ProductRouter);
 
 const start = async () => {
   await mongoose.connect('mongodb+srv://admin:admin@databases.rudz7.mongodb.net/auction?retryWrites=true&w=majority');
@@ -58,8 +60,14 @@ const configureSocket = () => {
     });
 
     client.on('raise-bet', async (data) => {
-      const { productId, raisedBet } = data;
-      const updatedProduct = await Market.raiseCurrentBet(productId, raisedBet);
+      const { productId, raisedBet, userId } = data;
+      const updatedProduct = await Market.raiseCurrentBet(productId, raisedBet, userId);
+
+      // send refresh balance
+      client.emit('refresh-balance');
+
+      // "client.to(YOUR_ID).emit" doesn't work like "client.emit", so need this line
+      client.emit('change-current-bet', updatedProduct);
       storageSubscribers[productId]?.forEach((userId) => {
         client.to(userId).emit('change-current-bet', updatedProduct);
       });

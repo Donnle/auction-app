@@ -4,15 +4,15 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Login, LoginData, Logout, Refresh, Registration, RegistrationData, Response } from '../interfaces';
 import { UserService } from './user.service';
 import { LOCAL_STORAGE } from '../enums';
+import { HeadersService } from './headers.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   isUserAuthorized$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  accessToken: string;
 
-  constructor(private http: HttpClient, private userService: UserService) {
+  constructor(private http: HttpClient, private userService: UserService, private headersService: HeadersService) {
     this.refreshAccessToken();
   }
 
@@ -79,12 +79,12 @@ export class AuthService {
   }
 
   private saveAccessToken(accessToken: string): void {
-    this.accessToken = accessToken;
+    this.headersService.accessToken = accessToken;
     localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, JSON.stringify(accessToken));
   }
 
   private removeAccessToken(): void {
-    this.accessToken = '';
+    this.headersService.accessToken = '';
     localStorage.removeItem(LOCAL_STORAGE.ACCESS_TOKEN);
   }
 }
