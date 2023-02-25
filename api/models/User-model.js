@@ -29,6 +29,17 @@ const UserModel = new Schema({
   },
   profileImage: {
     type: String,
+    default: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png',
+  },
+  deliveryCity: {
+    type: String,
+    required: false,
+    default: 'Не вказано',
+  },
+  deliveryDepartment: {
+    type: String,
+    required: false,
+    default: 'Не вказано',
   },
 });
 

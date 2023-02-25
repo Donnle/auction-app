@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import "~@ng-select/ng-select/themes/default.theme.css";
 @import "ngx-smart-modal/ngx-smart-modal";
 @import "assets/icomoon/style.css";
 
@@ -52,6 +53,15 @@ body {
 
 .nsm-content {
   border-radius: 10px;
+}
+
+.ng-select {
+  font-size: 1.4rem;
+}
+
+.ng-select.ng-select-single .ng-select-container .ng-value-container .ng-input {
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 ul {

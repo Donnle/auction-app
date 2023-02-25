@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NormalizeEnd } from '../interfaces';
+import { CityInfo, NormalizeEnd } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +44,10 @@ export class AdditionalService {
     }
 
     return '';
+  }
+
+  fullCityAddress(city: CityInfo) {
+    return `${city.SettlementTypeDescription} ${city.Description}, ${city.RegionsDescription}, ${city.AreaDescription}`;
   }
 
   private calculateEnds(date: Date): NormalizeEnd {
