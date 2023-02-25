@@ -89,6 +89,8 @@ class UserController {
       console.log(e);
       return res.status(400).send({ data: { message: e.message }, success: false });
     }
+  }
+
   async saveDeliveryInfo(req, res, next) {
     try {
       const { userId, deliveryCity, deliveryDepartment } = req.body;

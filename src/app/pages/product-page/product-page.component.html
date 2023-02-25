@@ -40,7 +40,7 @@
   </div>
 </div>
 <app-buy-now-popup
-  *ngIf='this.productInfo'
+  *ngIf='this.productData'
 ></app-buy-now-popup>
 <app-raise-bet-popup
   (changeBet)='productService.changeBet($event)'
