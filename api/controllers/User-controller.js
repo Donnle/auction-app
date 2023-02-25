@@ -93,8 +93,11 @@ class UserController {
 
   async saveDeliveryInfo(req, res, next) {
     try {
-      const { userId, deliveryCity, deliveryDepartment } = req.body;
-      const userData = await UserService.saveDeliveryInfo(userId, deliveryCity, deliveryDepartment);
+      const { authorization } = req.headers;
+      const { deliveryCity, deliveryDepartment } = req.body;
+      
+      const accessToken = authorization.split(' ')[1];
+      const userData = await UserService.saveDeliveryInfo(accessToken, deliveryCity, deliveryDepartment);
 
       return res.status(200).send({ data: userData, success: true });
     } catch (e) {

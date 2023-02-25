@@ -11,7 +11,7 @@ import {
   RaiseBetResponse,
   Response,
   UserData,
-  UserDeliveryInfo
+  UserDeliveryInfo,
 } from '../interfaces';
 import { HeadersService } from './headers.service';
 
@@ -56,6 +56,12 @@ export class RequestsService {
     });
   }
 
+  saveDeliveryAddress(userDeliveryInfo: UserDeliveryInfo): Observable<Response<UserData>> {
+    return this.http.put<Response<UserData>>('/api/user/delivery/save-address', userDeliveryInfo, {
+      headers: this.headersService.userHeaders(),
+    });
+  }
+
   getAvailableDeliveryAddresses(cityName: string): Observable<NovaPoshtaResponse<CityInfo[]>> {
     return this.http.post<NovaPoshtaResponse<CityInfo[]>>(`https://api.novaposhta.ua/v2.0/json/`, {
       apiKey: '2344a6f87ed19f2b6b7e2cb0a8ed1245',
@@ -78,9 +84,5 @@ export class RequestsService {
         CityName: cityName,
       },
     });
-  }
-
-  saveDeliveryAddress(userDeliveryInfo: UserDeliveryInfo): Observable<Response<UserData>> {
-    return this.http.put<Response<UserData>>('/api/user/delivery/save-address', userDeliveryInfo);
   }
 }

@@ -90,8 +90,9 @@ class UserService {
     return new UserDto(userData).balance;
   }
 
-  async saveDeliveryInfo(userId, deliveryCity, deliveryDepartment) {
-    const user = await UserModel.findByIdAndUpdate(userId, { deliveryCity, deliveryDepartment }, { new: true });
+  async saveDeliveryInfo(accessToken, deliveryCity, deliveryDepartment) {
+    const userData = tokenService.validateAccessToken(accessToken);
+    const user = await UserModel.findByIdAndUpdate(userData.id, { deliveryCity, deliveryDepartment }, { new: true });
 
     return new UserDto(user);
   }
