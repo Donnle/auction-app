@@ -30,7 +30,7 @@
           <span
             class='product-content__days-left'><strong>До кінця аукціону:</strong> {{timeLeft | date:dateFormat}}</span>
           <div class='product-content__buttons'>
-            <app-button [buttonData]='buyNowData'></app-button>
+            <app-button (click)='openBuyNow()' [buttonData]='buyNowData'></app-button>
             <app-button (click)='openRaiseBet()' [buttonData]='betData'></app-button>
           </div>
         </div>
@@ -39,6 +39,9 @@
     <app-products [products]='recommendationProducts'></app-products>
   </div>
 </div>
+<app-buy-now-popup
+  *ngIf='this.productInfo'
+></app-buy-now-popup>
 <app-raise-bet-popup
   (changeBet)='productService.changeBet($event)'
   *ngIf='productData'

@@ -4,7 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:proxy": "ng serve --proxy-config proxy.conf.json",
+    "start:frontend-proxy": "ng serve --proxy-config proxy.conf.json",
+    "start:backend": "npm run --prefix ./api start",
+    "start:all": "concurrently --prefix \"[{name}]\" --names \"Backend,Frontend\" \"npm run --prefix ./api start\" \"ng serve --proxy-config proxy.conf.json\"",
     "build": "ng build",
     "watch": "ng build --watch --configuration development"
   },
@@ -18,9 +20,11 @@
     "@angular/platform-browser": "^15.0.0",
     "@angular/platform-browser-dynamic": "^15.0.0",
     "@angular/router": "^15.0.0",
+    "@ng-select/ng-select": "^10.0.3",
     "karma-coverage-istanbul-reporter": "^3.0.3",
     "ngx-auto-unsubscribe-decorator": "^1.1.0",
     "ngx-smart-modal": "^7.4.1",
+    "ngx-toastr": "^16.0.2",
     "rxjs": "~7.5.0",
     "socket.io-client": "^4.6.0",
     "tslib": "^2.3.0",

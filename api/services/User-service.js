@@ -89,6 +89,12 @@ class UserService {
 
     return new UserDto(userData).balance;
   }
+
+  async saveDeliveryInfo(userId, deliveryCity, deliveryDepartment) {
+    const user = await UserModel.findByIdAndUpdate(userId, { deliveryCity, deliveryDepartment }, { new: true });
+
+    return new UserDto(user);
+  }
 }
 
 module.exports = new UserService();

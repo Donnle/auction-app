@@ -5,6 +5,9 @@ module.exports = class UserDtos {
   name;
   surname;
   balance;
+  profileImage;
+  deliveryCity;
+  deliveryDepartment;
 
   constructor(model) {
     this.id = model._id;
@@ -13,5 +16,8 @@ module.exports = class UserDtos {
     this.phone = model.phone;
     this.email = model.email;
     this.balance = model.balance;
+    this.profileImage = model.profileImage;
+    this.deliveryCity = model.deliveryCity;
+    this.deliveryDepartment = model.deliveryDepartment;
   }
 };

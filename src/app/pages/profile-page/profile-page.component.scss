@@ -1,0 +1,51 @@
+.profile {
+  &-wrapper {
+    max-width: 1240px;
+    padding: 25px 20px;
+    margin: 0 auto;
+  }
+
+  &-flexbox {
+    display: flex;
+    gap: 50px;
+
+    &__photo {
+      width: 200px;
+      height: 200px;
+      overflow: hidden;
+      border-radius: 100%;
+
+      &-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      &-edit {
+      }
+    }
+
+    &__settings {
+    }
+  }
+}
+
+.settings {
+  &-title {
+    font-size: 2rem;
+    line-height: 1.15em;
+    padding-bottom: 10px;
+  }
+
+  &-form {
+    &__label {
+      display: block;
+      font-size: 1.6rem;
+      padding-bottom: 10px;
+
+      ng-select {
+        width: 600px;
+      }
+    }
+  }
+}

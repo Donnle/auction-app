@@ -1,7 +1,9 @@
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Socket } from 'socket.io-client';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
+import { io, Socket } from 'socket.io-client';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
 import { MODALS } from '../../enums';
@@ -9,6 +11,8 @@ import { ButtonData, Product, ProductsResponse, Response } from '../../interface
 import { RequestsService } from '../../services/requests.service';
 import { ProductService } from '../../services/product.service';
 import { RaiseBetPopupComponent } from '../../components/popups/raise-bet-popup/raise-bet-popup.component';
+import { AuthService } from '../../services/auth.service';
+import { BuyNowPopupComponent } from '../../components/popups/buy-now-popup/buy-now-popup.component';
 
 @Component({
   selector: 'app-product-page',
@@ -22,9 +26,6 @@ export class ProductPageComponent implements OnInit, OnDestroy {
   dateFormat: string;
   socket: Socket;
   isLoggedIn: boolean = false;
-
-  @AutoUnsubscribe() isLoggedInSubs: Subscription;
-
   buyNowData: ButtonData = {
     text: 'Купити зараз',
     type: 'orange',
@@ -35,6 +36,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     type: 'transparent',
     size: 'large',
   };
+  @AutoUnsubscribe() private isLoggedInSubs: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -71,6 +73,41 @@ export class ProductPageComponent implements OnInit, OnDestroy {
         }
       },
     });
+  }
+
+  changeBet(raisedBet: number) {
+    if (!this.isLoggedIn) {
+      return alert('Потрібно ввійти для того щоб підняти ставку');
+    }
+
+    const data = {
+      productId: this.productInfo._id,
+      raisedBet,
+    };
+
+    this.productInfo.currentBet = raisedBet;
+    this.socket.emit(SOCKET_CHANNELS.RAISE_BET, data);
+  }
+
+  configureSocket() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+
+    this.socket = io();
+    this.socket.on(SOCKET_CHANNELS.CONNECT, () => {
+      console.log('Connected');
+
+      this.socket.emit(SOCKET_CHANNELS.REGISTER_SUBSCRIBER, this.productInfo);
+
+      this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productInfo) => {
+        this.productInfo.currentBet = productInfo.currentBet;
+      });
+    });
+  }
+
+  openBuyNow() {
+    this.ngxSmartModalService.create(MODALS.BUY_NOW, BuyNowPopupComponent).open();
   }
 
   openRaiseBet() {
