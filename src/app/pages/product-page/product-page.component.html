@@ -1,9 +1,9 @@
-<div *ngIf='productInfo' class='product-page'>
+<div *ngIf='productData' class='product-page'>
   <div class='product-page-wrapper'>
     <div class='product-page-content'>
       <div class='product-page-content__product product'>
         <div class='product-image'>
-          <img *ngIf='productInfo.photos; else placeholderImage' [src]='productInfo.photos[0]' alt='main'
+          <img *ngIf='productData.photos; else placeholderImage' [src]='productData.photos[0]' alt='main'
                class='product-image__img'>
           <ng-template #placeholderImage>
             <img alt='main' class='product-image__img'
@@ -11,20 +11,20 @@
           </ng-template>
         </div>
         <div class='product-content'>
-          <h2 class='product-content__title'>{{productInfo.title}}</h2>
-          <p class='product-content__description'>{{productInfo.description}}</p>
+          <h2 class='product-content__title'>{{productData.title}}</h2>
+          <p class='product-content__description'>{{productData.description}}</p>
           <ul class='product-content__prices prices'>
             <li class='prices-item'>
               <h3 class='prices-item__title'>Купити зараз:</h3>
-              <span class='prices-item__price'>{{productInfo.buyNowPrice | number}} грн</span>
+              <span class='prices-item__price'>{{productData.buyNowPrice | number}} грн</span>
             </li>
             <li class='prices-item'>
               <h3 class='prices-item__title'>Ставка:</h3>
-              <span class='prices-item__price'>{{productInfo.currentBet | number}} грн</span>
+              <span class='prices-item__price'>{{productData.currentBet | number}} грн</span>
             </li>
             <li class='prices-item'>
               <h3 class='prices-item__title'>Мінімальний крок:</h3>
-              <span class='prices-item__price'>{{productInfo.minStep | number}} грн</span>
+              <span class='prices-item__price'>{{productData.minStep | number}} грн</span>
             </li>
           </ul>
           <span
@@ -43,7 +43,6 @@
   *ngIf='this.productInfo'
 ></app-buy-now-popup>
 <app-raise-bet-popup
-  (changeBet)='changeBet($event)'
-  *ngIf='this.productInfo'
-  [productInfo]='productInfo'
+  (changeBet)='productService.changeBet($event)'
+  *ngIf='productData'
 ></app-raise-bet-popup>

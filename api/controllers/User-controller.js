@@ -67,8 +67,9 @@ class UserController {
 
   async getUserData(req, res, next) {
     try {
-      const { id } = req.query;
-      const userData = await UserService.getUserDataById(id);
+      const { authorization } = req.headers;
+      const accessToken = authorization.split(' ')[1];
+      const userData = await UserService.getUserData(accessToken);
 
       return res.status(200).send({ data: userData, success: true });
     } catch (e) {
@@ -77,6 +78,17 @@ class UserController {
     }
   }
 
+  async getUserBalance(req, res, next) {
+    try {
+      const { authorization } = req.headers;
+      const accessToken = authorization.split(' ')[1];
+
+      const userBalance = await UserService.getUserBalance(accessToken);
+      return res.status(200).send({ data: { balance: userBalance }, success: true });
+    } catch (e) {
+      console.log(e);
+      return res.status(400).send({ data: { message: e.message }, success: false });
+    }
   async saveDeliveryInfo(req, res, next) {
     try {
       const { userId, deliveryCity, deliveryDepartment } = req.body;

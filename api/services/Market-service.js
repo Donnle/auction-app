@@ -43,8 +43,16 @@ class MarketService {
     };
   }
 
-  raiseCurrentBet(productId, raisedBet) {
-    return Product.findByIdAndUpdate(productId, { currentBet: raisedBet }, { new: true });
+  async raiseCurrentBet(productId, raisedBet, userId) {
+    return {
+      success: true,
+      data: {
+        product: await Product.findByIdAndUpdate(productId, {
+          currentBet: raisedBet,
+          currentBetUser: userId,
+        }, { new: true }),
+      },
+    };
   }
 }
 

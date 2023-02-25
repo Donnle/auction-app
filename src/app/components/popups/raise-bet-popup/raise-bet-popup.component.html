@@ -1,19 +1,19 @@
 <ngx-smart-modal identifier='raise-bet'>
-  <div *ngIf='productInfo' class='info'>
+  <div *ngIf='productData' class='info'>
     <div class='info-prices'>
       <div class='info-prices__field'>
         <h3 class='info-prices__field-title'>Активна ставка:</h3>
-        <span class='info-prices__field-price'>{{productInfo.currentBet}}</span>
+        <span class='info-prices__field-price'>{{productData.currentBet}}</span>
       </div>
       <div class='info-prices__field'>
         <h3 class='info-prices__field-title'>Мінімальний крок:</h3>
-        <span class='info-prices__field-price'>{{productInfo.minStep}}</span>
+        <span class='info-prices__field-price'>{{productData.minStep}}</span>
       </div>
     </div>
     <div class='info-end'>
       <h3 class='info-end__title'>До кінця аукціону:</h3>
       <span
-        class='info-end__date'>{{productInfo.endDate | date:dateFormat}}</span>
+        class='info-end__date'>{{productData.endDate | date:dateFormat}}</span>
     </div>
   </div>
   <form (ngSubmit)='onSubmit()' [formGroup]='raiseBetForm' class='form'>

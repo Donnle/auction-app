@@ -93,6 +93,20 @@ export interface ProductResponse {
 }
 
 
+export interface BalanceResponse {
+  balance: number;
+}
+
+export interface RaiseBetData {
+  productId: string;
+  raisedBet: number;
+}
+
+export interface RaiseBetResponse {
+  product: Product;
+  userData: UserData;
+}
+
 /** Nova Poshta **/
 export interface NovaPoshtaResponse<T> {
   success: boolean;
