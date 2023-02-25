@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
 import { io, Socket } from 'socket.io-client';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { MODALS, SOCKET_CHANNELS } from '../../enums';
@@ -7,8 +9,7 @@ import { RequestsService } from '../../services/requests.service';
 import { ButtonData, Product, ProductResponse, ProductsResponse, Response } from '../../interfaces';
 import { RaiseBetPopupComponent } from '../../components/popups/raise-bet-popup/raise-bet-popup.component';
 import { AuthService } from '../../services/auth.service';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
-import { Subscription } from 'rxjs';
+import { BuyNowPopupComponent } from '../../components/popups/buy-now-popup/buy-now-popup.component';
 
 @Component({
   selector: 'app-product-page',
@@ -22,9 +23,6 @@ export class ProductPageComponent implements OnInit {
   dateFormat: string;
   socket: Socket;
   isLoggedIn: boolean = false;
-
-  @AutoUnsubscribe() isLoggedInSubs: Subscription;
-
   buyNowData: ButtonData = {
     text: 'Купити зараз',
     type: 'orange',
@@ -35,6 +33,7 @@ export class ProductPageComponent implements OnInit {
     type: 'transparent',
     size: 'large',
   };
+  @AutoUnsubscribe() private isLoggedInSubs: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -88,7 +87,7 @@ export class ProductPageComponent implements OnInit {
     if (!this.isLoggedIn) {
       return alert('Потрібно ввійти для того щоб підняти ставку');
     }
-    
+
     const data = {
       productId: this.productInfo._id,
       raisedBet,
@@ -113,11 +112,13 @@ export class ProductPageComponent implements OnInit {
         this.productInfo.currentBet = productInfo.currentBet;
       });
     });
+  }
 
+  openBuyNow() {
+    this.ngxSmartModalService.create(MODALS.BUY_NOW, BuyNowPopupComponent).open();
   }
 
   openRaiseBet() {
-    this.ngxSmartModalService.setModalData(this.productInfo, MODALS.RAISE_BET);
     this.ngxSmartModalService.create(MODALS.RAISE_BET, RaiseBetPopupComponent).open();
   }
 }

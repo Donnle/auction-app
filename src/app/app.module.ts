@@ -17,9 +17,11 @@ import { AddProductPageComponent } from './pages/add-product-page/add-product-pa
 import { ProductsComponent } from './components/products/products.component';
 import { ProductPageComponent } from './pages/product-page/product-page.component';
 import { ProductComponent } from './components/product/product.component';
-import { AuthGuard } from './guards/auth.guard';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { RaiseBetPopupComponent } from './components/popups/raise-bet-popup/raise-bet-popup.component';
+import { BuyNowPopupComponent } from './components/popups/buy-now-popup/buy-now-popup.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { CityPipe } from './pipes/city.pipe';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { RaiseBetPopupComponent } from './components/popups/raise-bet-popup/rais
     ProductComponent,
     NotFoundPageComponent,
     RaiseBetPopupComponent,
+    BuyNowPopupComponent,
+    CityPipe,
   ],
   imports: [
     BrowserModule,
@@ -44,6 +48,7 @@ import { RaiseBetPopupComponent } from './components/popups/raise-bet-popup/rais
     NgxSmartModalModule.forRoot(),
     ReactiveFormsModule,
     RouterLink,
+    NgSelectModule,
     RouterModule.forRoot([
       {
         path: '',
@@ -56,18 +61,18 @@ import { RaiseBetPopupComponent } from './components/popups/raise-bet-popup/rais
       {
         path: 'profile',
         component: ProfilePageComponent,
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
       },
       {
         path: 'product/:productId',
         component: ProductPageComponent,
       },
       {
-        path: '**',
+        path: 'not-found',
         component: NotFoundPageComponent,
       },
       {
-        path: 'not-found',
+        path: '**',
         component: NotFoundPageComponent,
       },
     ]),

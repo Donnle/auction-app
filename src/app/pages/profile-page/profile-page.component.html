@@ -1,1 +1,36 @@
-<p>profile-page works!</p>
+<div class='profile'>
+  <div class='profile-wrapper'>
+    <div class='profile-flexbox'>
+      <div class='profile-flexbox__photo'>
+        <img
+          [src]='userData.profileImage'
+          alt='user' class='profile-flexbox__photo-image'>
+        <span class='profile-flexbox__photo-edit'></span>
+      </div>
+      <div class='profile-flexbox__settings settings'>
+        <h2 class='settings-title'>Налаштування доставки сервісом "Нова Пошта"</h2>
+        <form (ngSubmit)='saveDeliveryAddress()' [formGroup]='deliveryForm' class='settings-form'>
+          <label class='settings-form__label'>
+            Населений пункт
+            <ng-select (input)='onInput($event)' (ngModelChange)='getDepartments()' formControlName='selectedCityRef'>
+              <ng-option *ngFor='let city of cities' [value]='city.Ref'>
+                {{city | city}}
+              </ng-option>
+            </ng-select>
+          </label>
+
+          <label class='settings-form__label'>
+            Відділення
+            <ng-select formControlName='selectedDepartmentRef'>
+              <ng-option *ngFor='let department of departments' [value]='department.Ref'>
+                {{department.Description}}
+              </ng-option>
+            </ng-select>
+          </label>
+
+          <app-button [buttonData]='deliverySaveButton'></app-button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

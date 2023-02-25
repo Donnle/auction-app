@@ -6,5 +6,6 @@ const router = Router();
 
 router.post('/change-user-data', authMiddleware, UserController.changeUserData);
 router.get('/user-data', UserController.getUserData);
+router.put('/delivery/save-address', UserController.saveDeliveryInfo);
 
 module.exports = router;
