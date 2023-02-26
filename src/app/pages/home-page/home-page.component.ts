@@ -15,7 +15,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   pagination: Pagination;
   searchText: string;
   currentPage: number = 1;
-  @AutoUnsubscribe() private loadProductsSubscription: Subscription;
+  @AutoUnsubscribe() loadProductsSubscription: Subscription;
 
   private readonly COUNT_PRODUCTS_ON_PAGE: number = 8;
 

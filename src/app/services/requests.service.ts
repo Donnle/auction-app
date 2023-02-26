@@ -8,7 +8,8 @@ import {
   RaiseBetData,
   RaiseBetResponse,
   Response,
-  UserData, UserDeliveryInfo,
+  UserData,
+  UserDeliveryInfo,
 } from '../interfaces';
 import { HeadersService } from './headers.service';
 
@@ -52,6 +53,12 @@ export class RequestsService {
       headers: this.headersService.userHeaders(),
     });
   }
+  
+  saveDeliveryAddress(userDeliveryInfo: UserDeliveryInfo): Observable<Response<UserData>> {
+    return this.http.put<Response<UserData>>('/api/user/delivery/save-address', userDeliveryInfo, {
+      headers: this.headersService.userHeaders(),
+    });
+  }
 
   buyProduct(productId: string, deliveryAddress: string) {
     return this.http.post('/api/order/buy', { productId, deliveryAddress }, {
@@ -81,9 +88,5 @@ export class RequestsService {
         CityName: cityName,
       },
     });
-  }
-
-  saveDeliveryAddress(userDeliveryInfo: UserDeliveryInfo): Observable<Response<UserData>> {
-    return this.http.put<Response<UserData>>('/api/user/delivery/save-address', userDeliveryInfo);
   }
 }

@@ -34,8 +34,8 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     type: 'transparent',
     size: 'large',
   };
+
   @AutoUnsubscribe() isLoggedInSubscription: Subscription;
-  @AutoUnsubscribe() private isLoggedInSubs: Subscription;
 
   constructor(
     private route: ActivatedRoute,
