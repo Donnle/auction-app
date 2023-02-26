@@ -60,12 +60,16 @@ export class ProductPageComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.productService.productData$.subscribe((productData: Product) => {
-      this.productData = productData;
+    this.productService.productData$.subscribe({
+      next: (productData: Product) => {
+        this.productData = productData;
+      },
     });
 
-    this.isLoggedInSubscription = this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
-      this.isLoggedIn = isLoggedIn;
+    this.isLoggedInSubscription = this.authService.isLoggedIn$.subscribe({
+      next: (isLoggedIn: boolean) => {
+        this.isLoggedIn = isLoggedIn;
+      },
     });
   }
 
@@ -85,7 +89,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     }
 
     const data = {
-      productId: this.productData._id,
+      productId: this.productData.id,
       raisedBet,
     };
 
@@ -102,7 +106,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     this.socket.on(SOCKET_CHANNELS.CONNECT, () => {
       console.log('Connected');
 
-      this.socket.emit(SOCKET_CHANNELS.REGISTER_SUBSCRIBER, this.productData);
+      this.socket.emit(SOCKET_CHANNELS.REGISTER_SUBSCRIBER, this.productData.id);
 
       this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productInfo) => {
         this.productData.currentBet = productInfo.currentBet;

@@ -1,4 +1,5 @@
-const Product = require('../models/Product-model');
+const ProductModel = require('../models/Product-model');
+const ProductDto = require('../dtos/Product-dto');
 
 class MarketService {
   async getProducts(page, count, query = '') {
@@ -9,16 +10,16 @@ class MarketService {
     let countPages;
 
     if (query) {
-      products = await Product.find({
+      products = await ProductModel.find({
         $or: [
           { title: { '$regex': query } },
           { description: { '$regex': query } },
         ],
       }).skip(countSkipProducts).limit(count);
-      countProducts = await Product.count();
+      countProducts = await ProductModel.count();
       countPages = Math.ceil(countProducts / count);
     } else {
-      const allProducts = await Product.find();
+      const allProducts = await ProductModel.find();
 
       products = allProducts.slice(countSkipProducts, page * count);
       countProducts = allProducts.length;
@@ -26,7 +27,7 @@ class MarketService {
     }
 
     return {
-      products,
+      products: products.map((product) => new ProductDto(product)),
       pagination: {
         countPages,
         countProducts,
@@ -36,32 +37,24 @@ class MarketService {
   }
 
   async getProduct(productId) {
-    const product = await Product.findById(productId);
+    const product = await ProductModel.findById(productId);
 
     return {
-      product,
+      product: new ProductDto(product),
     };
   }
 
   async raiseCurrentBet(productId, raisedBet, userId) {
-    const product = await Product.findById(productId);
+    const product = await ProductModel.findById(productId);
     if (product.isSold) {
-      return {
-        success: false,
-        data: {
-          message: 'Продукт продано!',
-        },
-      };
+      throw new Error('Товар продано!');
     }
     product.currentBet = raisedBet;
     product.currentBetUser = userId;
     await product.save();
 
     return {
-      success: true,
-      data: {
-        product,
-      },
+      product: new ProductDto(product),
     };
   }
 }

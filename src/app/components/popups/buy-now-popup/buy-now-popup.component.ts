@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../../services/user.service';
 import { ProductService } from '../../../services/product.service';
-import { ButtonData, Product, UserData } from '../../../interfaces';
+import { ButtonData, OrderResponse, Product, Response, UserData } from '../../../interfaces';
 import { RequestsService } from '../../../services/requests.service';
 import { AuthService } from '../../../services/auth.service';
 import { Subscription } from 'rxjs';
@@ -27,20 +27,26 @@ export class BuyNowPopupComponent {
   @AutoUnsubscribe() productDataSubscription: Subscription;
 
   constructor(private userService: UserService, private productService: ProductService, private requestsService: RequestsService, private authService: AuthService) {
-    this.userDataSubscription = this.userService.userData$.subscribe((userData: UserData) => {
-      this.userData = userData;
+    this.userDataSubscription = this.userService.userData$.subscribe({
+      next: (userData: UserData) => {
+        this.userData = userData;
+      },
     });
 
-    this.productDataSubscription = this.productService.productData$.subscribe((productData: Product) => {
-      this.productData = productData;
+    this.productDataSubscription = this.productService.productData$.subscribe({
+      next: (productData: Product) => {
+        this.productData = productData;
+      },
     });
   }
 
   buyProduct() {
-    const productId = this.productData._id;
+    const productId = this.productData.id;
     const deliveryAddress = `${this.userData.deliveryCity} (${this.userData.deliveryDepartment})`;
-    this.requestsService.buyProduct(productId, deliveryAddress).subscribe((orderInfo) => {
-      console.log(orderInfo);
+    this.requestsService.buyProduct(productId, deliveryAddress).subscribe({
+      next: (orderInfo: Response<OrderResponse>) => {
+        console.log(orderInfo);
+      },
     });
   }
 }

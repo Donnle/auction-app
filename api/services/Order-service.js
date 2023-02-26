@@ -2,6 +2,7 @@ const TokensService = require('./Tokens-service');
 const ProductModel = require('../models/Product-model');
 const UserModel = require('../models/User-model');
 const OrderModel = require('../models/Order-model');
+const OrderDto = require('../dtos/Order-dto');
 
 class OrderService {
   async buy(accessToken, productId, deliveryAddress) {
@@ -32,11 +33,13 @@ class OrderService {
     });
 
     productData.isSold = true;
-    
+
     await productData.save();
     await order.save();
 
-    return order;
+    return {
+      order: new OrderDto(order),
+    };
   }
 }
 

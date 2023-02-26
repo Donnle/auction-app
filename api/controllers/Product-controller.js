@@ -7,8 +7,8 @@ class ProductController {
       const { productId, raisedBet } = req.body;
       const accessToken = authorization.split(' ')[1];
 
-      const responseData = await ProductService.raiseBet(productId, raisedBet, accessToken);
-      return res.status(200).send(responseData);
+      const data = await ProductService.raiseBet(productId, raisedBet, accessToken);
+      return res.status(200).send({ data, success: true });
     } catch (e) {
       console.log(e);
       return res.status(400).send({ data: { message: e.message }, success: false });

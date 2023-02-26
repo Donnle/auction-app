@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { UserData } from '../interfaces';
+import { Response, UserData } from '../interfaces';
 import { LOCAL_STORAGE } from '../enums';
 import { RequestsService } from './requests.service';
 
@@ -36,8 +36,10 @@ export class UserService {
   }
 
   refreshUserData() {
-    this.requestsService.getUserData().subscribe((response) => {
-      this.userData = response.data;
+    this.requestsService.getUserData().subscribe({
+      next: (response: Response<UserData>) => {
+        this.userData = response.data;
+      },
     });
   }
 }

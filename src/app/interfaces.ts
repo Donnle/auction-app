@@ -67,7 +67,7 @@ export interface NormalizeEnd {
 }
 
 export interface Product {
-  _id: string;
+  id: string;
   title: string;
   description: string;
   buyNowPrice: number;
@@ -92,7 +92,6 @@ export interface ProductResponse {
   product: Product;
 }
 
-
 export interface BalanceResponse {
   balance: number;
 }
@@ -105,6 +104,13 @@ export interface RaiseBetData {
 export interface RaiseBetResponse {
   product: Product;
   userData: UserData;
+}
+
+export interface OrderResponse {
+  id: string,
+  sellerId: string,
+  productId: string,
+  
 }
 
 /** Nova Poshta **/

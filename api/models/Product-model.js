@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const Product = new Schema({
+const ProductModel = new Schema({
   title: {
     required: true,
     type: String,
@@ -25,10 +25,10 @@ const Product = new Schema({
     required: true,
     type: Date,
   },
-  photos: {
+  photos: [{
     required: true,
-    type: Array,
-  },
+    type: String,
+  }],
   currentBetUser: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -44,4 +44,4 @@ const Product = new Schema({
   },
 });
 
-module.exports = model('product', Product);
+module.exports = model('product', ProductModel);
