@@ -34,13 +34,19 @@ const UserModel = new Schema({
   deliveryCity: {
     type: String,
     required: false,
-    default: 'Не вказано',
+    default: null,
   },
   deliveryDepartment: {
     type: String,
     required: false,
-    default: 'Не вказано',
+    default: null,
   },
+  productsForSale: [{
+    type: Schema.Types.ObjectId,
+  }],
+  purchasedProducts: [{
+    type: Schema.Types.ObjectId,
+  }],
 });
 
 module.exports = model('user', UserModel);

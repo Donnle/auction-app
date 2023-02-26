@@ -32,7 +32,7 @@ export class ProductService {
     private userService: UserService,
     private router: Router,
   ) {
-    this.isLoggedInSubs = this.authService.isUserAuthorized$.subscribe((isLoggedIn: boolean) => {
+    this.isLoggedInSubs = this.authService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
       this.isLoggedIn = isLoggedIn;
     });
   }
@@ -99,6 +99,10 @@ export class ProductService {
       this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productData: Response<ProductResponse>) => {
         this.productData = productData.data.product;
         this.userService.refreshUserData();
+      });
+
+      this.socket.on(SOCKET_CHANNELS.ALREADY_SOLD, () => {
+        alert('Товар вже продано!');
       });
 
       this.socket.on(SOCKET_CHANNELS.DISCONNECT, () => {

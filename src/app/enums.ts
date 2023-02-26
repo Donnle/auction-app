@@ -16,5 +16,6 @@ export enum SOCKET_CHANNELS {
   REFRESH_BALANCE = 'refresh-balance',
   REGISTER_SUBSCRIBER = 'register-subscriber',
   RAISE_BET = 'raise-bet',
-  DISCONNECT = 'disconnect'
+  DISCONNECT = 'disconnect',
+  ALREADY_SOLD = 'already-sold'
 }

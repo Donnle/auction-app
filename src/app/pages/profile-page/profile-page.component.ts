@@ -48,8 +48,8 @@ export class ProfilePageComponent implements OnInit {
     this.userDataSubscription = this.userService.userData$.subscribe((userData: UserData) => {
       this.userData = userData;
       this.deliveryForm.patchValue({
-        selectedCityRef: userData.deliveryCity,
-        selectedDepartmentRef: userData.deliveryDepartment,
+        selectedCityRef: userData.deliveryCity || 'не вказано',
+        selectedDepartmentRef: userData.deliveryDepartment || 'не вказано',
       });
     });
 

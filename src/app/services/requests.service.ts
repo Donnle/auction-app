@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
-  CityInfo, Department,
-  NovaPoshtaResponse,
-  BalanceResponse,
+  BalanceResponse, CityInfo, Department, NovaPoshtaResponse,
   ProductResponse,
   ProductsResponse,
   RaiseBetData,
@@ -55,9 +53,15 @@ export class RequestsService {
       headers: this.headersService.userHeaders(),
     });
   }
-
+  
   saveDeliveryAddress(userDeliveryInfo: UserDeliveryInfo): Observable<Response<UserData>> {
     return this.http.put<Response<UserData>>('/api/user/delivery/save-address', userDeliveryInfo, {
+      headers: this.headersService.userHeaders(),
+    });
+  }
+
+  buyProduct(productId: string, deliveryAddress: string) {
+    return this.http.post('/api/order/buy', { productId, deliveryAddress }, {
       headers: this.headersService.userHeaders(),
     });
   }
