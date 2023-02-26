@@ -7,7 +7,6 @@ class MarketService {
 
     let products;
     let countProducts;
-    let countPages;
 
     if (query) {
       products = await ProductModel.find({
@@ -17,14 +16,13 @@ class MarketService {
         ],
       }).skip(countSkipProducts).limit(count);
       countProducts = await ProductModel.count();
-      countPages = Math.ceil(countProducts / count);
     } else {
       const allProducts = await ProductModel.find();
 
       products = allProducts.slice(countSkipProducts, page * count);
       countProducts = allProducts.length;
-      countPages = Math.ceil(countProducts / count);
     }
+    let countPages = Math.ceil(countProducts / count);
 
     return {
       products: products.map((product) => new ProductDto(product)),
@@ -38,20 +36,6 @@ class MarketService {
 
   async getProduct(productId) {
     const product = await ProductModel.findById(productId);
-
-    return {
-      product: new ProductDto(product),
-    };
-  }
-
-  async raiseCurrentBet(productId, raisedBet, userId) {
-    const product = await ProductModel.findById(productId);
-    if (product.isSold) {
-      throw new Error('Товар продано!');
-    }
-    product.currentBet = raisedBet;
-    product.currentBetUser = userId;
-    await product.save();
 
     return {
       product: new ProductDto(product),

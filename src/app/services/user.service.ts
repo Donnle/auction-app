@@ -17,7 +17,7 @@ export class UserService {
     return this.userData$.getValue().id;
   }
 
-  get userData() {
+  get userData(): UserData {
     return this.userData$.getValue();
   }
 

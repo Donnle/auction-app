@@ -17,6 +17,7 @@ import { HeadersService } from './headers.service';
   providedIn: 'root',
 })
 export class RequestsService {
+  private novaPoshtaAPIKey = '2344a6f87ed19f2b6b7e2cb0a8ed1245';
 
   constructor(private http: HttpClient, private headersService: HeadersService) {
   }
@@ -42,13 +43,13 @@ export class RequestsService {
     });
   }
 
-  checkUserBalance() {
+  checkUserBalance(): Observable<Response<BalanceResponse>> {
     return this.http.get<Response<BalanceResponse>>('/api/user/user-balance', {
       headers: this.headersService.userHeaders(),
     });
   }
 
-  getUserData() {
+  getUserData(): Observable<Response<UserData>> {
     return this.http.get<Response<UserData>>('/api/user/user-data', {
       headers: this.headersService.userHeaders(),
     });
@@ -61,14 +62,14 @@ export class RequestsService {
   }
 
   buyProduct(productId: string, deliveryAddress: string): Observable<Response<OrderResponse>> {
-    return this.http.post<Response<OrderResponse>>('/api/order/buy', { productId, deliveryAddress }, {
+    return this.http.post<Response<OrderResponse>>('/api/product/buy', { productId, deliveryAddress }, {
       headers: this.headersService.userHeaders(),
     });
   }
 
   getAvailableDeliveryAddresses(cityName: string): Observable<NovaPoshtaResponse<CityInfo[]>> {
     return this.http.post<NovaPoshtaResponse<CityInfo[]>>(`https://api.novaposhta.ua/v2.0/json/`, {
-      apiKey: '2344a6f87ed19f2b6b7e2cb0a8ed1245',
+      apiKey: this.novaPoshtaAPIKey,
       modelName: 'Address',
       calledMethod: 'getSettlements',
       methodProperties: {
@@ -81,7 +82,7 @@ export class RequestsService {
 
   getAvailableDeliveryDepartments(cityName: string): Observable<NovaPoshtaResponse<Department[]>> {
     return this.http.post<NovaPoshtaResponse<Department[]>>(`https://api.novaposhta.ua/v2.0/json/`, {
-      apiKey: '2344a6f87ed19f2b6b7e2cb0a8ed1245',
+      apiKey: this.novaPoshtaAPIKey,
       modelName: 'Address',
       calledMethod: 'getWarehouses',
       methodProperties: {

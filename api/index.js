@@ -6,8 +6,7 @@ const AuthRouter = require('./router/Auth-router');
 const UserRouter = require('./router/User-router');
 const MarketRouter = require('./router/Market-router');
 const ProductRouter = require('./router/Product-router');
-const OrderRouter = require('./router/Order-router');
-const MarketService = require('./services/Market-service');
+
 const socket = require('socket.io')(6464);
 
 const PORT = 8989;
@@ -22,7 +21,6 @@ app.use('/api/auth', AuthRouter);
 app.use('/api/user', UserRouter);
 app.use('/api/market', MarketRouter);
 app.use('/api/product', ProductRouter);
-app.use('/api/order', OrderRouter);
 
 const start = async () => {
   await mongoose.connect('mongodb+srv://admin:admin@databases.rudz7.mongodb.net/auction?retryWrites=true&w=majority');
@@ -61,18 +59,12 @@ const configureSocket = () => {
       console.log('Subscribed users: ', storageSubscribers);
     });
 
-    client.on('raise-bet', async (data) => {
+    client.on('raise-bet', async (product) => {
       try {
-        const { productId, raisedBet, userId } = data;
-        const updatedProduct = await MarketService.raiseCurrentBet(productId, raisedBet, userId);
-
-        // send refresh balance
-        client.emit('refresh-balance');
-
         // "client.to(YOUR_ID).emit" doesn't work like "client.emit", so need this line
-        client.emit('change-current-bet', updatedProduct);
-        storageSubscribers[productId]?.forEach((userId) => {
-          client.to(userId).emit('change-current-bet', updatedProduct);
+        client.emit('change-current-bet', product);
+        storageSubscribers[product.id]?.forEach((userId) => {
+          client.to(userId).emit('change-current-bet', product);
         });
         console.log(`Update message was sent to all subscribed users`);
       } catch (e) {

@@ -12,11 +12,12 @@ import { RequestsService } from '../../services/requests.service';
 })
 export class HomePageComponent implements OnInit, OnDestroy {
   products: Product[] = [];
-  pagination: Pagination;
   searchText: string;
-  currentPage: number = 1;
+
   @AutoUnsubscribe() loadProductsSubscription: Subscription;
 
+  private pagination: Pagination;
+  private currentPage: number = 1;
   private readonly COUNT_PRODUCTS_ON_PAGE: number = 8;
 
   constructor(

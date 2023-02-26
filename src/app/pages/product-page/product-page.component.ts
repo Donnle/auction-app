@@ -83,20 +83,6 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeBet(raisedBet: number) {
-    if (!this.isLoggedIn) {
-      return alert('Потрібно ввійти для того щоб підняти ставку');
-    }
-
-    const data = {
-      productId: this.productData.id,
-      raisedBet,
-    };
-
-    this.productData.currentBet = raisedBet;
-    this.socket.emit(SOCKET_CHANNELS.RAISE_BET, data);
-  }
-
   configureSocket() {
     if (this.socket) {
       this.socket.disconnect();

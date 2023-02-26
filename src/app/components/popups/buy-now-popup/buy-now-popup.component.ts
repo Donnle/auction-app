@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { UserService } from '../../../services/user.service';
-import { ProductService } from '../../../services/product.service';
-import { ButtonData, OrderResponse, Product, Response, UserData } from '../../../interfaces';
-import { RequestsService } from '../../../services/requests.service';
-import { AuthService } from '../../../services/auth.service';
 import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
+import { ButtonData, OrderResponse, Product, Response, UserData } from '../../../interfaces';
+import { UserService } from '../../../services/user.service';
+import { ProductService } from '../../../services/product.service';
+import { RequestsService } from '../../../services/requests.service';
 
 @Component({
   selector: 'app-buy-now-popup',
@@ -26,7 +25,7 @@ export class BuyNowPopupComponent {
   @AutoUnsubscribe() userDataSubscription: Subscription;
   @AutoUnsubscribe() productDataSubscription: Subscription;
 
-  constructor(private userService: UserService, private productService: ProductService, private requestsService: RequestsService, private authService: AuthService) {
+  constructor(private userService: UserService, private productService: ProductService, private requestsService: RequestsService) {
     this.userDataSubscription = this.userService.userData$.subscribe({
       next: (userData: UserData) => {
         this.userData = userData;
@@ -45,7 +44,11 @@ export class BuyNowPopupComponent {
     const deliveryAddress = `${this.userData.deliveryCity} (${this.userData.deliveryDepartment})`;
     this.requestsService.buyProduct(productId, deliveryAddress).subscribe({
       next: (orderInfo: Response<OrderResponse>) => {
+        // redirect to after buy page
         console.log(orderInfo);
+      },
+      error: (err) => {
+        alert(err.error.data.message);
       },
     });
   }

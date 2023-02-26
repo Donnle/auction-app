@@ -75,20 +75,14 @@ class UserService {
   async changeUserData(id, userData) {
     const newUserData = await UserModel.findByIdAndUpdate(id, userData);
     
-    const userDto = new UserDto(newUserData);
-    return {
-      user: { ...userDto },
-    };
+    return new UserDto(newUserData);
   }
 
   async getUserData(accessToken) {
     const userId = await TokenService.validateAccessToken(accessToken).id;
     const userData = await UserModel.findById(userId);
 
-    const userDto = new UserDto(userData);
-    return {
-      user: { ...userDto },
-    };
+    return new UserDto(userData);
   }
 
   async getUserBalance(accessToken) {
@@ -105,10 +99,7 @@ class UserService {
     const userData = tokenService.validateAccessToken(accessToken);
     const user = await UserModel.findByIdAndUpdate(userData.id, { deliveryCity, deliveryDepartment }, { new: true });
 
-    const userDto = new UserDto(user);
-    return {
-      user: { ...userDto },
-    };
+    return new UserDto(user);
   }
 }
 
