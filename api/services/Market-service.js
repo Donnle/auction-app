@@ -44,13 +44,23 @@ class MarketService {
   }
 
   async raiseCurrentBet(productId, raisedBet, userId) {
+    const product = await Product.findById(productId);
+    if (product.isSold) {
+      return {
+        success: false,
+        data: {
+          message: 'Продукт продано!',
+        },
+      };
+    }
+    product.currentBet = raisedBet;
+    product.currentBetUser = userId;
+    await product.save();
+
     return {
       success: true,
       data: {
-        product: await Product.findByIdAndUpdate(productId, {
-          currentBet: raisedBet,
-          currentBetUser: userId,
-        }, { new: true }),
+        product,
       },
     };
   }

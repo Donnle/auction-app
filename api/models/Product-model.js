@@ -34,6 +34,14 @@ const Product = new Schema({
     ref: 'User',
     default: undefined,
   },
+  sellerId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  isSold: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = model('product', Product);

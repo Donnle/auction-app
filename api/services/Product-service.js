@@ -18,17 +18,21 @@ class ProductService {
     const product = await ProductModel.findById(productId);
     const previousCurrentBetUser = await UserModel.findById(product.currentBetUser);
 
-    console.log(product.currentBetUser);
-    console.log(userData._id);
+    if (product.isSold) {
+      return {
+        success: false,
+        data: {
+          message: 'Товар продано!',
+        },
+      };
+    }
+
 
     if (!product.currentBetUser) {
-      console.log('product.currentBetUser: ', product.currentBetUser);
       userData.balance -= raisedBet;
     } else if (product.currentBetUser.equals(userData._id)) {
-      console.log('equals');
       userData.balance -= raisedBet - product.currentBet;
     } else {
-      console.log('else');
       previousCurrentBetUser.balance += product.currentBet;
       await previousCurrentBetUser.save();
 
@@ -36,6 +40,8 @@ class ProductService {
     }
 
     await userData.save();
+
+    console.log(`Користувач з id: ${userData._id}, піднняв ставку на товар з id: ${product._id}, до ${raisedBet}`);
 
     return {
       data: {

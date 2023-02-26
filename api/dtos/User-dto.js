@@ -8,6 +8,8 @@ module.exports = class UserDtos {
   profileImage;
   deliveryCity;
   deliveryDepartment;
+  productsForSale;
+  purchasedProducts;
 
   constructor(model) {
     this.id = model._id;
@@ -19,5 +21,7 @@ module.exports = class UserDtos {
     this.profileImage = model.profileImage;
     this.deliveryCity = model.deliveryCity;
     this.deliveryDepartment = model.deliveryDepartment;
+    this.productsForSale = model.productsForSale;
+    this.purchasedProducts = model.purchasedProducts;
   }
 };

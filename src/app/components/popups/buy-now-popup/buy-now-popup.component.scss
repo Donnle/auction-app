@@ -1,0 +1,34 @@
+.buy {
+  &-wrapper {
+    padding-top: 20px;
+
+    &__delivery {
+    }
+
+    &__buy-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}
+
+.delivery {
+  padding-bottom: 10px;
+
+  &-title {
+    padding-bottom: 5px;
+  }
+
+  &-info {
+  }
+}
+
+.buy-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &-price {
+  }
+}

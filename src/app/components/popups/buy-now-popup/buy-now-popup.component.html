@@ -1,5 +1,17 @@
-<div class='buy'>
-  <div class='buy-wrapper'>
-    .buy-wrapper__
+<ngx-smart-modal identifier='buy-now'>
+  <div class='buy'>
+    <div class='buy-wrapper'>
+      <div class='buy-wrapper__delivery delivery'>
+        <h3 class='delivery-title'>Адрес доставки:</h3>
+        <div class='delivery-info'>
+          <span>{{userData.deliveryCity}} ({{userData.deliveryDepartment}})</span>
+        </div>
+      </div>
+      <div class='buy-wrapper__buy-info buy-info'>
+        <span class='buy-info-price'>Ціна: {{productData.buyNowPrice}}</span>
+        <app-button (click)='buyProduct()' [buttonData]='buyNowButton'></app-button>
+      </div>
+    </div>
   </div>
-</div>
+</ngx-smart-modal>
+
