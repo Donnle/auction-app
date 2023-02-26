@@ -24,11 +24,9 @@ export class ProfilePageComponent implements OnInit {
 
   cities: CityInfo[];
   departments: Department[];
-
+  @AutoUnsubscribe() userDataSubscription: Subscription;
   private inputSubject$ = new BehaviorSubject<string>('');
   private cityName$ = this.inputSubject$.asObservable().pipe(debounceTime(300), distinctUntilChanged());
-
-  @AutoUnsubscribe() private userDataSubscription: Subscription;
 
   constructor(private requestsService: RequestsService, private userService: UserService, private additionalService: AdditionalService) {
   }
@@ -50,8 +48,8 @@ export class ProfilePageComponent implements OnInit {
     this.userDataSubscription = this.userService.userData$.subscribe((userData: UserData) => {
       this.userData = userData;
       this.deliveryForm.patchValue({
-        selectedCityRef: userData.deliveryCity,
-        selectedDepartmentRef: userData.deliveryDepartment,
+        selectedCityRef: userData.deliveryCity || 'не вказано',
+        selectedDepartmentRef: userData.deliveryDepartment || 'не вказано',
       });
     });
 

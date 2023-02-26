@@ -10,6 +10,7 @@ import { RequestsService } from '../../services/requests.service';
 import { ProductService } from '../../services/product.service';
 import { RaiseBetPopupComponent } from '../../components/popups/raise-bet-popup/raise-bet-popup.component';
 import { BuyNowPopupComponent } from '../../components/popups/buy-now-popup/buy-now-popup.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-product-page',
@@ -33,10 +34,12 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     type: 'transparent',
     size: 'large',
   };
+  @AutoUnsubscribe() isLoggedInSubscription: Subscription;
   @AutoUnsubscribe() private isLoggedInSubs: Subscription;
 
   constructor(
     private route: ActivatedRoute,
+    private authService: AuthService,
     private requestsService: RequestsService,
     private ngxSmartModalService: NgxSmartModalService,
     public productService: ProductService,
@@ -59,6 +62,10 @@ export class ProductPageComponent implements OnInit, OnDestroy {
 
     this.productService.productData$.subscribe((productData: Product) => {
       this.productData = productData;
+    });
+
+    this.isLoggedInSubscription = this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
+      this.isLoggedIn = isLoggedIn;
     });
   }
 
@@ -104,6 +111,9 @@ export class ProductPageComponent implements OnInit, OnDestroy {
   }
 
   openBuyNow() {
+    if (!this.isLoggedIn) {
+      return alert('Потрібно ввійти для того щоб придбати товар');
+    }
     this.ngxSmartModalService.create(MODALS.BUY_NOW, BuyNowPopupComponent).open();
   }
 

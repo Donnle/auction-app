@@ -2,16 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
-  CityInfo, Department,
-  NovaPoshtaResponse,
-  BalanceResponse,
+  BalanceResponse, CityInfo, Department, NovaPoshtaResponse,
   ProductResponse,
   ProductsResponse,
   RaiseBetData,
   RaiseBetResponse,
   Response,
-  UserData,
-  UserDeliveryInfo
+  UserData, UserDeliveryInfo,
 } from '../interfaces';
 import { HeadersService } from './headers.service';
 
@@ -52,6 +49,12 @@ export class RequestsService {
 
   getUserData() {
     return this.http.get<Response<UserData>>('/api/user/user-data', {
+      headers: this.headersService.userHeaders(),
+    });
+  }
+
+  buyProduct(productId: string, deliveryAddress: string) {
+    return this.http.post('/api/order/buy', { productId, deliveryAddress }, {
       headers: this.headersService.userHeaders(),
     });
   }

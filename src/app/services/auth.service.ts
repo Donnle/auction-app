@@ -10,7 +10,7 @@ import { HeadersService } from './headers.service';
   providedIn: 'root',
 })
 export class AuthService {
-  isUserAuthorized$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isLoggedIn$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient, private userService: UserService, private headersService: HeadersService) {
     this.refreshAccessToken();
@@ -20,7 +20,7 @@ export class AuthService {
     return this.http.post<Response<Login>>('/api/auth/login', userData)
       .pipe(map(({ data, success }: Response<Login>) => {
         if (success) {
-          this.isUserAuthorized$.next(true);
+          this.isLoggedIn$.next(true);
           console.log('Success login! Data info: ', data);
 
           this.userService.saveUserData(data.user);
@@ -37,7 +37,7 @@ export class AuthService {
     return this.http.post<Response<Registration>>('/api/auth/registration', userData)
       .pipe(map(({ data, success }: Response<Registration>) => {
         if (success) {
-          this.isUserAuthorized$.next(true);
+          this.isLoggedIn$.next(true);
           console.log('Success registration! Data info: ', data);
 
           this.userService.saveUserData(data.user);
@@ -54,7 +54,7 @@ export class AuthService {
     this.http.get<Response<Refresh>>('/api/auth/refresh').subscribe({
       next: ({ data, success }: Response<Refresh>) => {
         if (success) {
-          this.isUserAuthorized$.next(true);
+          this.isLoggedIn$.next(true);
           this.saveAccessToken(data.accessToken);
           this.userService.saveUserData(data.user);
           console.log('accessToken: ', data.accessToken, 'refreshToken: ', data.refreshToken);
@@ -70,7 +70,7 @@ export class AuthService {
     this.http.post<Response<Logout>>('/api/auth/logout', {}).subscribe({
       next: ({ success }: Response<Logout>) => {
         if (success) {
-          this.isUserAuthorized$.next(false);
+          this.isLoggedIn$.next(false);
           this.removeAccessToken();
           this.userService.onLogout();
         }

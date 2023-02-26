@@ -6,6 +6,7 @@ const AuthRouter = require('./router/Auth-router');
 const UserRouter = require('./router/User-router');
 const MarketRouter = require('./router/Market-router');
 const ProductRouter = require('./router/Product-router');
+const OrderRouter = require('./router/Order-router');
 const Market = require('./services/Market-service');
 const socket = require('socket.io')(6464);
 
@@ -21,6 +22,7 @@ app.use('/api/auth', AuthRouter);
 app.use('/api/user', UserRouter);
 app.use('/api/market', MarketRouter);
 app.use('/api/product', ProductRouter);
+app.use('/api/order', OrderRouter);
 
 const start = async () => {
   await mongoose.connect('mongodb+srv://admin:admin@databases.rudz7.mongodb.net/auction?retryWrites=true&w=majority');
@@ -62,6 +64,10 @@ const configureSocket = () => {
     client.on('raise-bet', async (data) => {
       const { productId, raisedBet, userId } = data;
       const updatedProduct = await Market.raiseCurrentBet(productId, raisedBet, userId);
+
+      if (!updatedProduct.success) {
+        return client.emit('already-sold');
+      }
 
       // send refresh balance
       client.emit('refresh-balance');
