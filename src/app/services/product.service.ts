@@ -47,21 +47,6 @@ export class ProductService {
     this.productData$.next(data);
   }
 
-  getProductData(productId: string): Observable<void | Response<ProductResponse>> {
-    return this.requestsService.getProductInfo(productId).pipe(map(
-      (response: Response<ProductResponse>) => {
-        if (response.success) {
-          this.productData$.next(response.data.product);
-        }
-
-        return response;
-      },
-    ), catchError(async () => {
-        await this.router.navigate(['not-found']);
-      },
-    ));
-  }
-
   changeBet(raisedBet: number) {
     if (!this.isLoggedIn) {
       return alert('Потрібно ввійти для того щоб підняти ставку');
@@ -85,7 +70,32 @@ export class ProductService {
     });
   }
 
-  configureSocket() {
+  disconnectSocket() {
+    this.socket.disconnect();
+  }
+
+  configureProductPage(productId: string) {
+    this.getProductData(productId).subscribe({
+      next: () => this.configureSocket(),
+    });
+  }
+
+  private getProductData(productId: string): Observable<void | Response<ProductResponse>> {
+    return this.requestsService.getProductInfo(productId).pipe(map(
+      (response: Response<ProductResponse>) => {
+        if (response.success) {
+          this.productData$.next(response.data.product);
+        }
+
+        return response;
+      },
+    ), catchError(async () => {
+        await this.router.navigate(['not-found']);
+      },
+    ));
+  }
+
+  private configureSocket() {
     if (this.socket) {
       this.disconnectSocket();
     }
@@ -111,10 +121,6 @@ export class ProductService {
         console.log('Disconnected from product: ', currentProductId);
       });
     });
-  }
-
-  disconnectSocket() {
-    this.socket.disconnect();
   }
 
   private raiseBet(raisedBet: number) {
