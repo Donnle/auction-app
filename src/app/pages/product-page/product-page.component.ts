@@ -50,11 +50,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     this.route.params.subscribe({
       next: (params: Params) => {
         const productId = params['productId'];
-        this.productService.getProductData(productId).subscribe({
-          next: () => {
-            this.productService.configureSocket();
-          },
-        });
+        this.productService.configureProductPage(productId);
       },
     });
 
