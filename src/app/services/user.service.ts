@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { UserData } from '../interfaces';
+import { Response, UserData, UserDataResponse } from '../interfaces';
 import { LOCAL_STORAGE } from '../enums';
 import { RequestsService } from './requests.service';
 
@@ -13,11 +13,7 @@ export class UserService {
   constructor(private requestsService: RequestsService) {
   }
 
-  get userId(): string {
-    return this.userData$.getValue().id;
-  }
-
-  get userData() {
+  get userData(): UserData {
     return this.userData$.getValue();
   }
 
@@ -25,19 +21,25 @@ export class UserService {
     this.userData$.next(data);
   }
 
+  get userId(): string {
+    return this.userData.id;
+  }
+
   saveUserData(userData: UserData) {
-    this.userData$.next(userData);
+    this.userData = userData;
     localStorage.setItem(LOCAL_STORAGE.USER_DATA, JSON.stringify(userData));
   }
 
   onLogout() {
-    this.userData$.next({} as UserData);
+    this.userData = {} as UserData;
     localStorage.removeItem(LOCAL_STORAGE.USER_DATA);
   }
 
   refreshUserData() {
-    this.requestsService.getUserData().subscribe((response) => {
-      this.userData = response.data;
+    this.requestsService.getUserData().subscribe({
+      next: (response: Response<UserDataResponse>) => {
+        this.userData = response.data.user;
+      },
     });
   }
 }

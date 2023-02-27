@@ -13,7 +13,6 @@ export enum MODALS {
 export enum SOCKET_CHANNELS {
   CONNECT = 'connect',
   CHANGE_CURRENT_BET = 'change-current-bet',
-  REFRESH_BALANCE = 'refresh-balance',
   REGISTER_SUBSCRIBER = 'register-subscriber',
   RAISE_BET = 'raise-bet',
   DISCONNECT = 'disconnect',

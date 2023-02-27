@@ -3,7 +3,14 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
 import { RequestsService } from '../../services/requests.service';
-import { ButtonData, CityInfo, Department, NovaPoshtaResponse, Response, UserData } from '../../interfaces';
+import {
+  ButtonData,
+  CityInfo,
+  Department,
+  NovaPoshtaResponse,
+  Response,
+  UserData, UserDataResponse,
+} from '../../interfaces';
 import { UserService } from '../../services/user.service';
 import { AdditionalService } from '../../services/additional.service';
 
@@ -53,9 +60,11 @@ export class ProfilePageComponent implements OnInit {
       });
     });
 
-    this.getCities(this.inputSubject$.getValue());
-    this.cityName$.subscribe((cityName: string) => {
-      this.getCities(cityName);
+    this.getCities();
+    this.cityName$.subscribe({
+      next: (cityName: string) => {
+        this.getCities(cityName);
+      },
     });
   }
 
@@ -67,8 +76,10 @@ export class ProfilePageComponent implements OnInit {
       return;
     }
 
-    this.requestsService.getAvailableDeliveryDepartments(cityName).subscribe((response: NovaPoshtaResponse<Department[]>) => {
-      this.departments = response.data;
+    this.requestsService.getAvailableDeliveryDepartments(cityName).subscribe({
+      next: (response: NovaPoshtaResponse<Department[]>) => {
+        this.departments = response.data;
+      },
     });
   }
 
@@ -86,8 +97,10 @@ export class ProfilePageComponent implements OnInit {
       deliveryDepartment: selectedDepartment.Description,
     };
 
-    this.requestsService.saveDeliveryAddress(userDeliveryInfo).subscribe((response: Response<UserData>) => {
-      this.userService.userData$.next(response.data);
+    this.requestsService.saveDeliveryAddress(userDeliveryInfo).subscribe({
+      next: (response: Response<UserDataResponse>) => {
+        this.userService.userData = response.data.user;
+      },
     });
   }
 
@@ -96,9 +109,11 @@ export class ProfilePageComponent implements OnInit {
     this.inputSubject$.next(inputElement.value);
   }
 
-  private getCities(cityName: string) {
-    this.requestsService.getAvailableDeliveryAddresses(cityName).subscribe((response: NovaPoshtaResponse<CityInfo[]>) => {
-      this.cities = response.data;
+  private getCities(cityName: string = '') {
+    this.requestsService.getAvailableDeliveryAddresses(cityName).subscribe({
+      next: (response: NovaPoshtaResponse<CityInfo[]>) => {
+        this.cities = response.data;
+      },
     });
   }
 }

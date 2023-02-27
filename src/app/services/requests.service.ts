@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
-  BalanceResponse, CityInfo, Department, NovaPoshtaResponse,
+  BalanceResponse, CityInfo, Department, NovaPoshtaResponse, OrderResponse,
   ProductResponse,
   ProductsResponse,
   RaiseBetData,
   RaiseBetResponse,
-  Response,
-  UserData,
+  Response, UserDataResponse,
   UserDeliveryInfo,
 } from '../interfaces';
 import { HeadersService } from './headers.service';
@@ -17,6 +16,7 @@ import { HeadersService } from './headers.service';
   providedIn: 'root',
 })
 export class RequestsService {
+  private readonly NOVA_POSHTA_API_KEY = '2344a6f87ed19f2b6b7e2cb0a8ed1245';
 
   constructor(private http: HttpClient, private headersService: HeadersService) {
   }
@@ -42,33 +42,33 @@ export class RequestsService {
     });
   }
 
-  checkUserBalance() {
+  checkUserBalance(): Observable<Response<BalanceResponse>> {
     return this.http.get<Response<BalanceResponse>>('/api/user/user-balance', {
       headers: this.headersService.userHeaders(),
     });
   }
 
-  getUserData() {
-    return this.http.get<Response<UserData>>('/api/user/user-data', {
-      headers: this.headersService.userHeaders(),
-    });
-  }
-  
-  saveDeliveryAddress(userDeliveryInfo: UserDeliveryInfo): Observable<Response<UserData>> {
-    return this.http.put<Response<UserData>>('/api/user/delivery/save-address', userDeliveryInfo, {
+  getUserData(): Observable<Response<UserDataResponse>> {
+    return this.http.get<Response<UserDataResponse>>('/api/user/user-data', {
       headers: this.headersService.userHeaders(),
     });
   }
 
-  buyProduct(productId: string, deliveryAddress: string) {
-    return this.http.post('/api/order/buy', { productId, deliveryAddress }, {
+  saveDeliveryAddress(userDeliveryInfo: UserDeliveryInfo): Observable<Response<UserDataResponse>> {
+    return this.http.put<Response<UserDataResponse>>('/api/user/delivery/save-address', userDeliveryInfo, {
+      headers: this.headersService.userHeaders(),
+    });
+  }
+
+  buyProduct(productId: string, deliveryAddress: string): Observable<Response<OrderResponse>> {
+    return this.http.post<Response<OrderResponse>>('/api/product/buy', { productId, deliveryAddress }, {
       headers: this.headersService.userHeaders(),
     });
   }
 
   getAvailableDeliveryAddresses(cityName: string): Observable<NovaPoshtaResponse<CityInfo[]>> {
     return this.http.post<NovaPoshtaResponse<CityInfo[]>>(`https://api.novaposhta.ua/v2.0/json/`, {
-      apiKey: '2344a6f87ed19f2b6b7e2cb0a8ed1245',
+      apiKey: this.NOVA_POSHTA_API_KEY,
       modelName: 'Address',
       calledMethod: 'getSettlements',
       methodProperties: {
@@ -81,7 +81,7 @@ export class RequestsService {
 
   getAvailableDeliveryDepartments(cityName: string): Observable<NovaPoshtaResponse<Department[]>> {
     return this.http.post<NovaPoshtaResponse<Department[]>>(`https://api.novaposhta.ua/v2.0/json/`, {
-      apiKey: '2344a6f87ed19f2b6b7e2cb0a8ed1245',
+      apiKey: this.NOVA_POSHTA_API_KEY,
       modelName: 'Address',
       calledMethod: 'getWarehouses',
       methodProperties: {

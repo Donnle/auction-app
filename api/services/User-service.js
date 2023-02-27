@@ -74,27 +74,38 @@ class UserService {
 
   async changeUserData(id, userData) {
     const newUserData = await UserModel.findByIdAndUpdate(id, userData);
-    return new UserDto(newUserData);
+
+    return {
+      user: new UserDto(newUserData)
+    };
   }
 
   async getUserData(accessToken) {
     const userId = await TokenService.validateAccessToken(accessToken).id;
     const userData = await UserModel.findById(userId);
-    return new UserDto(userData);
+
+    return {
+      user: new UserDto(userData)
+    };
   }
 
   async getUserBalance(accessToken) {
     const { id } = tokenService.validateAccessToken(accessToken);
     const userData = await UserModel.findById(id);
 
-    return new UserDto(userData).balance;
+    const userDto = new UserDto(userData);
+    return {
+      balance: userDto.balance,
+    };
   }
 
   async saveDeliveryInfo(accessToken, deliveryCity, deliveryDepartment) {
     const userData = tokenService.validateAccessToken(accessToken);
     const user = await UserModel.findByIdAndUpdate(userData.id, { deliveryCity, deliveryDepartment }, { new: true });
 
-    return new UserDto(user);
+    return {
+      user: new UserDto(user)
+    };
   }
 }
 

@@ -83,8 +83,8 @@ class UserController {
       const { authorization } = req.headers;
       const accessToken = authorization.split(' ')[1];
 
-      const userBalance = await UserService.getUserBalance(accessToken);
-      return res.status(200).send({ data: { balance: userBalance }, success: true });
+      const data = await UserService.getUserBalance(accessToken);
+      return res.status(200).send({ data, success: true });
     } catch (e) {
       console.log(e);
       return res.status(400).send({ data: { message: e.message }, success: false });
@@ -95,7 +95,7 @@ class UserController {
     try {
       const { authorization } = req.headers;
       const { deliveryCity, deliveryDepartment } = req.body;
-      
+
       const accessToken = authorization.split(' ')[1];
       const userData = await UserService.saveDeliveryInfo(accessToken, deliveryCity, deliveryDepartment);
 

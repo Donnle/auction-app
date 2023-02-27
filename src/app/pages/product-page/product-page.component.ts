@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { io, Socket } from 'socket.io-client';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
-import { MODALS, SOCKET_CHANNELS } from '../../enums';
+import { MODALS } from '../../enums';
 import { ButtonData, Product, ProductsResponse, Response } from '../../interfaces';
 import { RequestsService } from '../../services/requests.service';
 import { ProductService } from '../../services/product.service';
@@ -22,7 +21,6 @@ export class ProductPageComponent implements OnInit, OnDestroy {
   productData: Product;
   timeLeft: Date;
   dateFormat: string;
-  socket: Socket;
   isLoggedIn: boolean = false;
   buyNowData: ButtonData = {
     text: 'Купити зараз',
@@ -60,12 +58,16 @@ export class ProductPageComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.productService.productData$.subscribe((productData: Product) => {
-      this.productData = productData;
+    this.productService.productData$.subscribe({
+      next: (productData: Product) => {
+        this.productData = productData;
+      },
     });
 
-    this.isLoggedInSubscription = this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
-      this.isLoggedIn = isLoggedIn;
+    this.isLoggedInSubscription = this.authService.isLoggedIn$.subscribe({
+      next: (isLoggedIn: boolean) => {
+        this.isLoggedIn = isLoggedIn;
+      },
     });
   }
 
@@ -76,37 +78,6 @@ export class ProductPageComponent implements OnInit, OnDestroy {
           this.recommendationProducts = data.products;
         }
       },
-    });
-  }
-
-  changeBet(raisedBet: number) {
-    if (!this.isLoggedIn) {
-      return alert('Потрібно ввійти для того щоб підняти ставку');
-    }
-
-    const data = {
-      productId: this.productData._id,
-      raisedBet,
-    };
-
-    this.productData.currentBet = raisedBet;
-    this.socket.emit(SOCKET_CHANNELS.RAISE_BET, data);
-  }
-
-  configureSocket() {
-    if (this.socket) {
-      this.socket.disconnect();
-    }
-
-    this.socket = io();
-    this.socket.on(SOCKET_CHANNELS.CONNECT, () => {
-      console.log('Connected');
-
-      this.socket.emit(SOCKET_CHANNELS.REGISTER_SUBSCRIBER, this.productData);
-
-      this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productInfo) => {
-        this.productData.currentBet = productInfo.currentBet;
-      });
     });
   }
 

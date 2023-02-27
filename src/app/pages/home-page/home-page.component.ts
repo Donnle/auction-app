@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { debounceTime, fromEvent, Subscription } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
-import { Pagination, Product } from '../../interfaces';
+import { Pagination, Product, ProductsResponse, Response } from '../../interfaces';
 import { RequestsService } from '../../services/requests.service';
 
 @Component({
@@ -12,11 +12,12 @@ import { RequestsService } from '../../services/requests.service';
 })
 export class HomePageComponent implements OnInit, OnDestroy {
   products: Product[] = [];
-  pagination: Pagination;
   searchText: string;
-  currentPage: number = 1;
+
   @AutoUnsubscribe() loadProductsSubscription: Subscription;
 
+  private pagination: Pagination;
+  private currentPage: number = 1;
   private readonly COUNT_PRODUCTS_ON_PAGE: number = 8;
 
   constructor(
@@ -48,10 +49,12 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   loadProducts(query: string = '') {
-    this.requestsService.getProducts(this.currentPage, this.COUNT_PRODUCTS_ON_PAGE, query).subscribe(({ data }) => {
-      this.products.push(...data.products);
-      this.pagination = data.pagination;
-      this.currentPage += 1;
+    this.requestsService.getProducts(this.currentPage, this.COUNT_PRODUCTS_ON_PAGE, query).subscribe({
+      next: ({ data }: Response<ProductsResponse>) => {
+        this.products.push(...data.products);
+        this.pagination = data.pagination;
+        this.currentPage += 1;
+      },
     });
   }
 

@@ -32,16 +32,18 @@ export class ProductService {
     private userService: UserService,
     private router: Router,
   ) {
-    this.isLoggedInSubs = this.authService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
-      this.isLoggedIn = isLoggedIn;
+    this.isLoggedInSubs = this.authService.isLoggedIn$.subscribe({
+      next: (isLoggedIn: boolean) => {
+        this.isLoggedIn = isLoggedIn;
+      },
     });
   }
 
-  get productData() {
+  get productData(): Product {
     return this.productData$.getValue();
   }
 
-  set productData(data) {
+  set productData(data: Product) {
     this.productData$.next(data);
   }
 
@@ -90,14 +92,14 @@ export class ProductService {
 
     this.socket = io();
     this.socket.on(SOCKET_CHANNELS.CONNECT, () => {
-      const currentProductId = this.productData._id;
+      const currentProductId = this.productData.id;
 
       console.log('Connected to product: ', currentProductId);
 
-      this.socket.emit(SOCKET_CHANNELS.REGISTER_SUBSCRIBER, this.productData);
+      this.socket.emit(SOCKET_CHANNELS.REGISTER_SUBSCRIBER, this.productData.id);
 
-      this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productData: Response<ProductResponse>) => {
-        this.productData = productData.data.product;
+      this.socket.on(SOCKET_CHANNELS.CHANGE_CURRENT_BET, (productData: Product) => {
+        this.productData = productData;
         this.userService.refreshUserData();
       });
 
@@ -117,14 +119,14 @@ export class ProductService {
 
   private raiseBet(raisedBet: number) {
     const data: RaiseBetData = {
-      productId: this.productData._id,
+      productId: this.productData.id,
       raisedBet,
     };
 
     this.requestsService.raiseBet(data).subscribe({
       next: (response: Response<RaiseBetResponse>) => {
         this.userService.userData = response.data.userData;
-        this.socket.emit(SOCKET_CHANNELS.RAISE_BET, data);
+        this.socket.emit(SOCKET_CHANNELS.RAISE_BET, response.data.product);
       },
     });
   }

@@ -1,4 +1,4 @@
-const tokenService = require('../services/Tokens-service');
+const TokenService = require('../services/Tokens-service');
 
 module.exports = function(req, res, next) {
   try {
@@ -12,7 +12,7 @@ module.exports = function(req, res, next) {
       return res.status(400).json({ data: { message: 'Упущений авторизаційний токен' }, success: false });
     }
 
-    const userData = tokenService.validateAccessToken(accessToken);
+    const userData = TokenService.validateAccessToken(accessToken);
     if (!userData) {
       return res.status(400).json({ data: { message: 'Невірний access токен' }, success: false });
     }
