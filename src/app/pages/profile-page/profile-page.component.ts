@@ -9,8 +9,7 @@ import {
   Department,
   NovaPoshtaResponse,
   Response,
-  UserData,
-  UserDeliveryInfoResponse,
+  UserData, UserDataResponse,
 } from '../../interfaces';
 import { UserService } from '../../services/user.service';
 import { AdditionalService } from '../../services/additional.service';
@@ -99,7 +98,7 @@ export class ProfilePageComponent implements OnInit {
     };
 
     this.requestsService.saveDeliveryAddress(userDeliveryInfo).subscribe({
-      next: (response: Response<UserDeliveryInfoResponse>) => {
+      next: (response: Response<UserDataResponse>) => {
         this.userService.userData = response.data.user;
       },
     });

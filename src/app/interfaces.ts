@@ -91,7 +91,7 @@ export interface OrderResponse {
   productId: string,
 }
 
-export interface UserDeliveryInfoResponse {
+export interface UserDataResponse {
   user: UserData;
 }
 
