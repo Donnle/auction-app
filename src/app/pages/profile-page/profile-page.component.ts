@@ -3,7 +3,15 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
 import { RequestsService } from '../../services/requests.service';
-import { ButtonData, CityInfo, Department, NovaPoshtaResponse, Response, UserData } from '../../interfaces';
+import {
+  ButtonData,
+  CityInfo,
+  Department,
+  NovaPoshtaResponse,
+  Response,
+  UserData,
+  UserDeliveryInfoResponse,
+} from '../../interfaces';
 import { UserService } from '../../services/user.service';
 import { AdditionalService } from '../../services/additional.service';
 
@@ -91,8 +99,8 @@ export class ProfilePageComponent implements OnInit {
     };
 
     this.requestsService.saveDeliveryAddress(userDeliveryInfo).subscribe({
-      next: (response: Response<UserData>) => {
-        this.userService.userData$.next(response.data);
+      next: (response: Response<UserDeliveryInfoResponse>) => {
+        this.userService.userData = response.data.user;
       },
     });
   }

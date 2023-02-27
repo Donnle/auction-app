@@ -38,6 +38,10 @@ export interface UserData {
   deliveryDepartment?: string;
 }
 
+export interface UserDataResponse {
+  user: UserData;
+}
+
 export interface RegistrationData {
   email: string;
   password: string;
@@ -110,7 +114,7 @@ export interface OrderResponse {
   id: string,
   sellerId: string,
   productId: string,
-  
+
 }
 
 /** Nova Poshta **/
@@ -255,6 +259,10 @@ export interface Schedule {
   Friday: string;
   Saturday: string;
   Sunday: string;
+}
+
+export interface UserDeliveryInfoResponse {
+  user: UserData;
 }
 
 export interface UserDeliveryInfo {

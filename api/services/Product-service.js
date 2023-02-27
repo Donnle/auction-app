@@ -11,8 +11,6 @@ class ProductService {
     const userDataFromAccessToken = TokensService.validateAccessToken(accessToken);
     const userData = await UserModel.findById(userDataFromAccessToken.id);
 
-    console.log(userData);
-
     if (userData.balance < raisedBet) {
       throw new Error('Недастатньо коштів');
     }

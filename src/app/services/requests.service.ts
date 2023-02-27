@@ -8,8 +8,8 @@ import {
   RaiseBetData,
   RaiseBetResponse,
   Response,
-  UserData,
-  UserDeliveryInfo,
+  UserDataResponse,
+  UserDeliveryInfo, UserDeliveryInfoResponse,
 } from '../interfaces';
 import { HeadersService } from './headers.service';
 
@@ -49,14 +49,14 @@ export class RequestsService {
     });
   }
 
-  getUserData(): Observable<Response<UserData>> {
-    return this.http.get<Response<UserData>>('/api/user/user-data', {
+  getUserData(): Observable<Response<UserDataResponse>> {
+    return this.http.get<Response<UserDataResponse>>('/api/user/user-data', {
       headers: this.headersService.userHeaders(),
     });
   }
 
-  saveDeliveryAddress(userDeliveryInfo: UserDeliveryInfo): Observable<Response<UserData>> {
-    return this.http.put<Response<UserData>>('/api/user/delivery/save-address', userDeliveryInfo, {
+  saveDeliveryAddress(userDeliveryInfo: UserDeliveryInfo): Observable<Response<UserDeliveryInfoResponse>> {
+    return this.http.put<Response<UserDeliveryInfoResponse>>('/api/user/delivery/save-address', userDeliveryInfo, {
       headers: this.headersService.userHeaders(),
     });
   }
