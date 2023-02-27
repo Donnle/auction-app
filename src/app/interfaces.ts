@@ -1,8 +1,23 @@
+/** MAIN RESPONSE **/
 export interface Response<T> {
   data: T;
   success: boolean;
 }
 
+export interface NovaPoshtaResponse<T> {
+  success: boolean;
+  data: T;
+  errors: any[];
+  warnings: any[];
+  info: Info;
+  messageCodes: any[];
+  errorCodes: any[];
+  warningCodes: any[];
+  infoCodes: any[];
+}
+
+
+/** AUTHORIZATION **/
 export interface Login {
   accessToken: string;
   refreshToken: string;
@@ -38,10 +53,6 @@ export interface UserData {
   deliveryDepartment?: string;
 }
 
-export interface UserDataResponse {
-  user: UserData;
-}
-
 export interface RegistrationData {
   email: string;
   password: string;
@@ -55,38 +66,7 @@ export interface LoginData {
   password: string;
 }
 
-export interface ButtonData {
-  text?: string;
-  size?: 'small' | 'medium' | 'large' | 'long';
-  type?: 'orange' | 'transparent';
-}
-
-export interface NormalizeEnd {
-  years: string,
-  months: string,
-  days: string,
-  hours: string,
-  minutes: string,
-  seconds: string,
-}
-
-export interface Product {
-  id: string;
-  title: string;
-  description: string;
-  buyNowPrice: number;
-  currentBet: number;
-  minStep: number;
-  endDate: Date;
-  photos: string[];
-}
-
-export interface Pagination {
-  countPages: number;
-  countProducts: number;
-  currentPage: number;
-}
-
+/** RESPONSES **/
 export interface ProductsResponse {
   products: Product[];
   pagination: Pagination;
@@ -100,11 +80,6 @@ export interface BalanceResponse {
   balance: number;
 }
 
-export interface RaiseBetData {
-  productId: string;
-  raisedBet: number;
-}
-
 export interface RaiseBetResponse {
   product: Product;
   userData: UserData;
@@ -114,22 +89,13 @@ export interface OrderResponse {
   id: string,
   sellerId: string,
   productId: string,
-
 }
 
-/** Nova Poshta **/
-export interface NovaPoshtaResponse<T> {
-  success: boolean;
-  data: T;
-  errors: any[];
-  warnings: any[];
-  info: Info;
-  messageCodes: any[];
-  errorCodes: any[];
-  warningCodes: any[];
-  infoCodes: any[];
+export interface UserDeliveryInfoResponse {
+  user: UserData;
 }
 
+/** NOVA POSHTA **/
 export interface CityInfo {
   Ref: string;
   SettlementType: string;
@@ -261,8 +227,42 @@ export interface Schedule {
   Sunday: string;
 }
 
-export interface UserDeliveryInfoResponse {
-  user: UserData;
+/** OTHER **/
+export interface ButtonData {
+  text?: string;
+  size?: 'small' | 'medium' | 'large' | 'long';
+  type?: 'orange' | 'transparent';
+}
+
+export interface NormalizeEnd {
+  years: string,
+  months: string,
+  days: string,
+  hours: string,
+  minutes: string,
+  seconds: string,
+}
+
+export interface Product {
+  id: string;
+  title: string;
+  description: string;
+  buyNowPrice: number;
+  currentBet: number;
+  minStep: number;
+  endDate: Date;
+  photos: string[];
+}
+
+export interface Pagination {
+  countPages: number;
+  countProducts: number;
+  currentPage: number;
+}
+
+export interface RaiseBetData {
+  productId: string;
+  raisedBet: number;
 }
 
 export interface UserDeliveryInfo {
