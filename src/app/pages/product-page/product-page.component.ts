@@ -3,7 +3,8 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
-import { MODALS } from '../../enums';
+import { ToastrService } from 'ngx-toastr';
+import { MODALS, TOASTR_MESSAGES } from '../../enums';
 import { ButtonData, Product, ProductsResponse, Response } from '../../interfaces';
 import { RequestsService } from '../../services/requests.service';
 import { ProductService } from '../../services/product.service';
@@ -40,6 +41,7 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private requestsService: RequestsService,
     private ngxSmartModalService: NgxSmartModalService,
+    private toastrService: ToastrService,
     public productService: ProductService,
   ) {
   }
@@ -79,7 +81,8 @@ export class ProductPageComponent implements OnInit, OnDestroy {
 
   openBuyNow() {
     if (!this.isLoggedIn) {
-      return alert('Потрібно ввійти для того щоб придбати товар');
+      this.toastrService.info(TOASTR_MESSAGES.NEEDS_LOGIN_FOR_BUY);
+      return;
     }
     this.ngxSmartModalService.create(MODALS.BUY_NOW, BuyNowPopupComponent).open();
   }

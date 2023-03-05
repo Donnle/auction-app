@@ -24,7 +24,7 @@
     "karma-coverage-istanbul-reporter": "^3.0.3",
     "ngx-auto-unsubscribe-decorator": "^1.1.0",
     "ngx-smart-modal": "^7.4.1",
-    "ngx-toastr": "^16.0.2",
+    "ngx-toastr": "^16.1.0",
     "rxjs": "~7.5.0",
     "socket.io-client": "^4.6.0",
     "tslib": "^2.3.0",

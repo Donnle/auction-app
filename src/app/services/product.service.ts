@@ -13,8 +13,9 @@ import {
   RaiseBetResponse,
   Response,
 } from '../interfaces';
-import { SOCKET_CHANNELS } from '../enums';
+import { SOCKET_CHANNELS, TOASTR_MESSAGES } from '../enums';
 import { UserService } from './user.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +32,7 @@ export class ProductService {
     private authService: AuthService,
     private userService: UserService,
     private router: Router,
+    private toastrService: ToastrService,
   ) {
     this.isLoggedInSubs = this.authService.isLoggedIn$.subscribe({
       next: (isLoggedIn: boolean) => {
@@ -49,11 +51,13 @@ export class ProductService {
 
   changeBet(raisedBet: number) {
     if (!this.isLoggedIn) {
-      return alert('Потрібно ввійти для того щоб підняти ставку');
+      this.toastrService.info(TOASTR_MESSAGES.NEEDS_LOGIN_FOR_RAISE_BET);
+      return;
     }
 
     if (this.userService.userData.balance < raisedBet) {
-      return alert('Недостатньо коштів на балансі, якщо ви впевнені що це не так, перезавантажте сторінку');
+      this.toastrService.info(TOASTR_MESSAGES.NO_ENOUGH_MONEY_BE);
+      return;
     }
 
     this.requestsService.checkUserBalance().subscribe({
@@ -61,11 +65,11 @@ export class ProductService {
         if (response.data.balance > raisedBet) {
           this.raiseBet(raisedBet);
         } else {
-          alert('Недостатньо коштів на балансі, якщо ви впевнені що це не так, перезавантажте сторінку');
+          this.toastrService.info(TOASTR_MESSAGES.NO_ENOUGH_MONEY);
         }
       },
       error: () => {
-        alert('Щось пішло не так, оновіть сторінку або зверніться до нас');
+        this.toastrService.error(TOASTR_MESSAGES.SOMETHING_WENT_WRONG);
       },
     });
   }
@@ -114,7 +118,7 @@ export class ProductService {
       });
 
       this.socket.on(SOCKET_CHANNELS.ALREADY_SOLD, () => {
-        alert('Товар вже продано!');
+        this.toastrService.info(TOASTR_MESSAGES.PRODUCT_ALREADY_SOLD);
       });
 
       this.socket.on(SOCKET_CHANNELS.DISCONNECT, () => {
@@ -133,6 +137,10 @@ export class ProductService {
       next: (response: Response<RaiseBetResponse>) => {
         this.userService.userData = response.data.userData;
         this.socket.emit(SOCKET_CHANNELS.RAISE_BET, response.data.product);
+        this.toastrService.info(TOASTR_MESSAGES.SUCCESS_RAISED_BET);
+      },
+      error: ({ error }) => {
+        this.toastrService.info(error.data.message);
       },
     });
   }

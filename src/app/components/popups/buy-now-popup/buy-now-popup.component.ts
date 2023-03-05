@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
 import { ButtonData, OrderResponse, Product, Response, UserData } from '../../../interfaces';
 import { UserService } from '../../../services/user.service';
@@ -11,7 +12,7 @@ import { RequestsService } from '../../../services/requests.service';
   templateUrl: './buy-now-popup.component.html',
   styleUrls: ['./buy-now-popup.component.scss'],
 })
-export class BuyNowPopupComponent {
+export class BuyNowPopupComponent implements OnInit {
   userData: UserData;
   productData: Product;
   isLoggedIn: boolean;
@@ -25,7 +26,15 @@ export class BuyNowPopupComponent {
   @AutoUnsubscribe() userDataSubscription: Subscription;
   @AutoUnsubscribe() productDataSubscription: Subscription;
 
-  constructor(private userService: UserService, private productService: ProductService, private requestsService: RequestsService) {
+  constructor(
+    private userService: UserService,
+    private productService: ProductService,
+    private requestsService: RequestsService,
+    private toastrService: ToastrService,
+  ) {
+  }
+
+  ngOnInit() {
     this.userDataSubscription = this.userService.userData$.subscribe({
       next: (userData: UserData) => {
         this.userData = userData;
@@ -47,8 +56,8 @@ export class BuyNowPopupComponent {
         // redirect to after buy page
         console.log(orderInfo);
       },
-      error: (err) => {
-        alert(err.error.data.message);
+      error: ({ error }) => {
+        this.toastrService.info(error.data.message);
       },
     });
   }

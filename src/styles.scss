@@ -3,6 +3,9 @@
 @import "ngx-smart-modal/ngx-smart-modal";
 @import "assets/icomoon/style.css";
 
+// regular style toast
+@import 'ngx-toastr/toastr';
+
 :root {
   --white-color: #FFFFFF;
   --black-color: #000000;
@@ -30,7 +33,6 @@ body {
   font-family: 'Roboto', sans-serif;
   font-size: 10px;
 }
-
 
 body {
   overflow-x: hidden;
@@ -67,4 +69,13 @@ body {
 
 ul {
   list-style-type: none;
+}
+
+.ngx-toastr {
+  width: auto !important;
+  max-width: 450px;
+}
+
+.toast-message {
+  font-size: 1.6rem;
 }
