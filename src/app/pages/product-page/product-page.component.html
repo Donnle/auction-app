@@ -27,8 +27,9 @@
               <span class='prices-item__price'>{{productData.minStep | number}} грн</span>
             </li>
           </ul>
-          <span
-            class='product-content__days-left'><strong>До кінця аукціону:</strong> {{timeLeft | date:dateFormat}}</span>
+          <span *ngIf='timeLeft' class='product-content__days-left'>
+            <strong>До кінця аукціону:</strong> {{timeLeft | timeLeft}}
+          </span>
           <div class='product-content__buttons'>
             <app-button (click)='openBuyNow()' [buttonData]='buyNowData'></app-button>
             <app-button (click)='openRaiseBet()' [buttonData]='betData'></app-button>
