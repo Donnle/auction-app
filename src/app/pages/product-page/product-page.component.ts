@@ -74,9 +74,11 @@ export class ProductPageComponent implements OnInit, OnDestroy {
           this.timerUpdateInterval.unsubscribe();
         }
 
-        this.timeLeft = this.refreshTimeLeft(this.productData.endDate);
+        const endDate = new Date(this.productData.endDate);
+
+        this.timeLeft = this.refreshTimeLeft(endDate);
         this.timerUpdateInterval = interval(1000).subscribe(() => {
-          this.timeLeft = this.refreshTimeLeft(this.productData.endDate);
+          this.timeLeft = this.refreshTimeLeft(endDate);
           console.log(`Залишилось ${this.timeLeft.daysLeft} днів, ${this.timeLeft.hoursLeft} годин, ${this.timeLeft.minutesLeft} хвилин та ${this.timeLeft.secondsLeft} секунд`);
         });
       },
