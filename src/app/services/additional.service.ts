@@ -5,27 +5,10 @@ import { CityInfo, NormalizeEnd } from '../interfaces';
   providedIn: 'root',
 })
 export class AdditionalService {
-  calculateDaysLeft(date: Date): Date {
-    const dateNow = new Date(date).getTime() - new Date().getTime();
+  calculateDaysLeft(date: number): Date {
+    const dateFormat = new Date(date);
+    const dateNow = new Date(dateFormat).getTime() - new Date().getTime();
     return new Date(dateNow);
-  }
-
-  formatPipeDate(date: Date): string {
-    const ends = this.calculateEnds(date);
-
-    if (date.getMonth() > 1) {
-      return `M ${ends.months} d ${ends.days} h ${ends.hours} m ${ends.minutes} s ${ends.seconds}`;
-    } else if (date.getDate() > 1) {
-      return `d ${ends.days} H ${ends.hours} m ${ends.minutes} s ${ends.seconds}`;
-    } else if (date.getHours() > 1) {
-      return `H ${ends.hours} m ${ends.minutes} s ${ends.seconds}`;
-    } else if (date.getMinutes() > 1) {
-      return `m ${ends.minutes} s ${ends.seconds}`;
-    } else if (date.getSeconds() > 1) {
-      return `s ${ends.seconds}`;
-    }
-
-    return '';
   }
 
   formatPipeHighestDateType(date: Date): string {

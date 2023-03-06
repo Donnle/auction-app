@@ -23,7 +23,7 @@ const ProductModel = new Schema({
   },
   endDate: {
     required: true,
-    type: Date,
+    type: Number,
   },
   photos: [{
     required: true,
@@ -39,6 +39,10 @@ const ProductModel = new Schema({
     ref: 'User',
   },
   isSold: {
+    type: Boolean,
+    default: false,
+  },
+  isTimeIsUp: {
     type: Boolean,
     default: false,
   },

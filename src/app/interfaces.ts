@@ -250,7 +250,7 @@ export interface Product {
   buyNowPrice: number;
   currentBet: number;
   minStep: number;
-  endDate: Date;
+  endDate: number;
   photos: string[];
 }
 
@@ -269,4 +269,11 @@ export interface UserDeliveryInfo {
   userId: string;
   deliveryCity: string;
   deliveryDepartment: string;
+}
+
+export interface TimeLeft {
+  daysLeft: number;
+  hoursLeft: number;
+  minutesLeft: number;
+  secondsLeft: number;
 }

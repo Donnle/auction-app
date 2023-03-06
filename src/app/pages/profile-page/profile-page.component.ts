@@ -13,6 +13,7 @@ import {
 } from '../../interfaces';
 import { UserService } from '../../services/user.service';
 import { AdditionalService } from '../../services/additional.service';
+import { CityPipe } from '../../pipes/city.pipe';
 
 @Component({
   selector: 'app-profile-page',

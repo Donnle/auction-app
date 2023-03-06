@@ -7,6 +7,9 @@ const UserRouter = require('./router/User-router');
 const MarketRouter = require('./router/Market-router');
 const ProductRouter = require('./router/Product-router');
 
+const cron = require('node-cron');
+const Product = require('./models/Product-model');
+
 const socket = require('socket.io')(6464);
 
 const PORT = 8989;
@@ -32,6 +35,13 @@ const start = async () => {
 try {
   start().then(() => {
     configureSocket();
+
+    // Update products in db every 4 hour 0 */4 * * *
+    cron.schedule('0 */4 * * *', async () => {
+      const expiredProducts = await Product.updateMany({ endDate: { $lte: Date.now() } }, { isTimeIsUp: true });
+      console.log(expiredProducts);
+      console.log('"Видалено" товарів: ', expiredProducts.modifiedCount);
+    });
   });
 } catch (e) {
   console.log(e);
