@@ -277,3 +277,7 @@ export interface TimeLeft {
   minutesLeft: number;
   secondsLeft: number;
 }
+
+export interface Environment {
+  api: string;
+}

@@ -20,6 +20,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+app.get('/', (req, res) => {
+  return res.status(200).send({
+    status: 200, data: {
+      message: 'Working',
+    },
+  });
+});
+
 app.use('/api/auth', AuthRouter);
 app.use('/api/user', UserRouter);
 app.use('/api/market', MarketRouter);
@@ -38,7 +46,7 @@ try {
 
     // Update products in db every 4 hour 0 */4 * * *
     cron.schedule('0 */4 * * *', async () => {
-      const expiredProducts = await Product.updateMany({ endDate: { $lte: Date.now() } }, { isTimeIsUp: true });
+      const expiredProducts = await Product.updateMany({ endDate: { $lte: Date.now() } }, { status: 'TIME_IS_UP' });
       console.log(expiredProducts);
       console.log('"Видалено" товарів: ', expiredProducts.modifiedCount);
     });

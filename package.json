@@ -1,12 +1,12 @@
 {
   "name": "auction-app",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "start:frontend-proxy": "ng serve --proxy-config proxy.conf.json",
     "start:backend": "npm run --prefix ./api start",
-    "start:all": "concurrently --prefix \"[{name}]\" --names \"Backend,Frontend\" \"npm run --prefix ./api start\" \"ng serve --proxy-config proxy.conf.json\"",
+    "start:all": "concurrently --prefix \"[{name}]\" --names \"Backend,Frontend\" \"npm run --prefix ./api start:nodemon\" \"ng serve --proxy-config proxy.conf.json\"",
     "build": "ng build",
     "watch": "ng build --watch --configuration development"
   },

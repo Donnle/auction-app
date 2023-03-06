@@ -5,6 +5,7 @@ import { Login, LoginData, Logout, Refresh, Registration, RegistrationData, Resp
 import { UserService } from './user.service';
 import { LOCAL_STORAGE } from '../enums';
 import { HeadersService } from './headers.service';
+import { EnvironmentService } from './environment.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,12 +13,12 @@ import { HeadersService } from './headers.service';
 export class AuthService {
   isLoggedIn$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private http: HttpClient, private userService: UserService, private headersService: HeadersService) {
+  constructor(private http: HttpClient, private userService: UserService, private headersService: HeadersService, private environmentService: EnvironmentService) {
     this.refreshAccessToken();
   }
 
   login(userData: LoginData): Observable<Response<Login>> {
-    return this.http.post<Response<Login>>('/api/auth/login', userData)
+    return this.http.post<Response<Login>>(`${this.environmentService.environment.api}/api/auth/login`, userData)
       .pipe(map(({ data, success }: Response<Login>) => {
         if (success) {
           this.isLoggedIn$.next(true);
@@ -34,7 +35,7 @@ export class AuthService {
   }
 
   registration(userData: RegistrationData): Observable<Response<Registration>> {
-    return this.http.post<Response<Registration>>('/api/auth/registration', userData)
+    return this.http.post<Response<Registration>>(`${this.environmentService.environment.api}/api/auth/registration`, userData)
       .pipe(map(({ data, success }: Response<Registration>) => {
         if (success) {
           this.isLoggedIn$.next(true);
@@ -51,7 +52,7 @@ export class AuthService {
   }
 
   refreshAccessToken(): void {
-    this.http.get<Response<Refresh>>('/api/auth/refresh').subscribe({
+    this.http.get<Response<Refresh>>(`${this.environmentService.environment.api}/api/auth/refresh`).subscribe({
       next: ({ data, success }: Response<Refresh>) => {
         if (success) {
           this.isLoggedIn$.next(true);
@@ -67,7 +68,7 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.post<Response<Logout>>('/api/auth/logout', {}).subscribe({
+    this.http.post<Response<Logout>>(`${this.environmentService.environment.api}/api/auth/logout`, {}).subscribe({
       next: ({ success }: Response<Logout>) => {
         if (success) {
           this.isLoggedIn$.next(false);
