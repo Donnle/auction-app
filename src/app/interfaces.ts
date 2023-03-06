@@ -270,3 +270,10 @@ export interface UserDeliveryInfo {
   deliveryCity: string;
   deliveryDepartment: string;
 }
+
+export interface TimeLeft {
+  daysLeft: number;
+  hoursLeft: number;
+  minutesLeft: number;
+  secondsLeft: number;
+}

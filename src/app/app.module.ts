@@ -33,6 +33,7 @@ import { CityPipe } from './pipes/city.pipe';
 
 // GUARDS
 import { AuthGuard } from './guards/auth.guard';
+import { TimeLeftPipe } from './pipes/time-left.pipe';
 
 const routes = [
   {
@@ -80,6 +81,7 @@ const routes = [
     RaiseBetPopupComponent,
     BuyNowPopupComponent,
     CityPipe,
+    TimeLeftPipe,
   ],
   imports: [
     BrowserModule,

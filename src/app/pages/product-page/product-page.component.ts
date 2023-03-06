@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { interval, Observable, Subscription } from 'rxjs';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
 import { MODALS } from '../../enums';
-import { ButtonData, Product, ProductsResponse, Response } from '../../interfaces';
+import { ButtonData, Product, ProductsResponse, Response, TimeLeft } from '../../interfaces';
 import { RequestsService } from '../../services/requests.service';
 import { ProductService } from '../../services/product.service';
 import { RaiseBetPopupComponent } from '../../components/popups/raise-bet-popup/raise-bet-popup.component';
@@ -19,9 +19,7 @@ import { AuthService } from '../../services/auth.service';
 export class ProductPageComponent implements OnInit, OnDestroy {
   recommendationProducts: Product[];
   productData: Product;
-  timeLeft: Date;
-  dateFormat: string;
-  isLoggedIn: boolean = false;
+  timeLeft: TimeLeft;
   buyNowData: ButtonData = {
     text: 'Купити зараз',
     type: 'orange',
@@ -32,6 +30,8 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     type: 'transparent',
     size: 'large',
   };
+  timerUpdateInterval: Subscription;
+  isLoggedIn: boolean = false;
 
   @AutoUnsubscribe() isLoggedInSubscription: Subscription;
 
@@ -42,6 +42,16 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     private ngxSmartModalService: NgxSmartModalService,
     public productService: ProductService,
   ) {
+  }
+
+  getRecommendationProducts(page: number = 1, count: number = 4) {
+    this.requestsService.getProducts(page, count).subscribe({
+      next: ({ data, success }: Response<ProductsResponse>) => {
+        if (success) {
+          this.recommendationProducts = data.products;
+        }
+      },
+    });
   }
 
   ngOnInit() {
@@ -57,22 +67,22 @@ export class ProductPageComponent implements OnInit, OnDestroy {
     this.productService.productData$.subscribe({
       next: (productData: Product) => {
         this.productData = productData;
+
+        if (this.timerUpdateInterval) {
+          this.timerUpdateInterval.unsubscribe();
+        }
+
+        this.timeLeft = this.refreshTimeLeft(this.productData.endDate);
+        this.timerUpdateInterval = interval(1000).subscribe(() => {
+          this.timeLeft = this.refreshTimeLeft(this.productData.endDate);
+          console.log(`Залишилось ${this.timeLeft.daysLeft} днів, ${this.timeLeft.hoursLeft} годин, ${this.timeLeft.minutesLeft} хвилин та ${this.timeLeft.secondsLeft} секунд`);
+        });
       },
     });
 
     this.isLoggedInSubscription = this.authService.isLoggedIn$.subscribe({
       next: (isLoggedIn: boolean) => {
         this.isLoggedIn = isLoggedIn;
-      },
-    });
-  }
-
-  getRecommendationProducts(page: number = 1, count: number = 4) {
-    this.requestsService.getProducts(page, count).subscribe({
-      next: ({ data, success }: Response<ProductsResponse>) => {
-        if (success) {
-          this.recommendationProducts = data.products;
-        }
       },
     });
   }
@@ -90,5 +100,17 @@ export class ProductPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.productService.disconnectSocket();
+  }
+
+  private refreshTimeLeft(endDate: Date) {
+    const targetDate = new Date(endDate);
+    const diff = targetDate.getTime() - Date.now();
+
+    return {
+      daysLeft: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hoursLeft: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+      minutesLeft: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+      secondsLeft: Math.floor((diff % (1000 * 60)) / 1000),
+    };
   }
 }
