@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Product } from '../../interfaces';
 import { AdditionalService } from '../../services/additional.service';
 
@@ -7,13 +7,20 @@ import { AdditionalService } from '../../services/additional.service';
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss'],
 })
-export class ProductComponent {
+export class ProductComponent implements OnInit {
+  daysLeft: Date;
+  highestDate: string;
   @Input() product: Product;
 
   constructor(public additionalService: AdditionalService) {
   }
 
-  getHighestDateType(date: Date): string {
+  ngOnInit() {
+    this.daysLeft = this.additionalService.calculateDaysLeft(this.product.endDate);
+    this.highestDate = this.getHighestDateType(this.product.endDate);
+  }
+
+  private getHighestDateType(date: number): string {
     const timeLeft = this.additionalService.calculateDaysLeft(date);
     return this.additionalService.formatPipeHighestDateType(timeLeft);
   }
