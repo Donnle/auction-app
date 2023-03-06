@@ -6,7 +6,7 @@
     <h3 [routerLink]='"/product/" + product.id' class='product-content__title'>{{product.title}}</h3>
     <span
       class='product-content__end-date'>До кінця аукціону:
-      {{additionalService.calculateDaysLeft(product.endDate) | date:getHighestDateType(product.endDate)}}
+      {{daysLeft | date:highestDate}}
       </span>
     <div class='product-content__prices prices'>
       <ul class='prices-flexbox'>

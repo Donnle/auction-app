@@ -250,7 +250,7 @@ export interface Product {
   buyNowPrice: number;
   currentBet: number;
   minStep: number;
-  endDate: Date;
+  endDate: number;
   photos: string[];
 }
 
