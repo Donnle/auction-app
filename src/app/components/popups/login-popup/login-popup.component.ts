@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { ButtonData } from '../../../interfaces';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login-popup',
@@ -18,7 +19,7 @@ export class LoginPopupComponent {
 
   @ViewChild('login') loginModal: any;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private toastrService: ToastrService) {
     this.loginForm = new FormGroup({
       email: new FormControl('', [
         Validators.required,
@@ -33,8 +34,7 @@ export class LoginPopupComponent {
     this.authService.login(this.loginForm.value).subscribe({
       next: () => this.loginModal.close(),
       error: ({ error }) => {
-        console.log('Error: ', error.data.message);
-        alert(error.data.message);
+        this.toastrService.info(error.data.message);
       },
     });
   }

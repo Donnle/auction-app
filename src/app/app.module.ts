@@ -33,6 +33,8 @@ import { CityPipe } from './pipes/city.pipe';
 
 // GUARDS
 import { AuthGuard } from './guards/auth.guard';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TimeLeftPipe } from './pipes/time-left.pipe';
 
 const routes = [
@@ -93,6 +95,10 @@ const routes = [
     RouterModule.forRoot(routes),
     ReactiveFormsModule,
     FormsModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right',
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],
