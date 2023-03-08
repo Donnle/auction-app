@@ -1,0 +1,65 @@
+@import "../../../../mixins";
+
+.info {
+  padding-top: 18px;
+
+  &-prices {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &__field {
+      padding-bottom: 15px;
+
+      &-title {
+        font-weight: 700;
+        font-size: 1.6rem;
+        line-height: 1.15em;
+        color: var(--black-color);
+        padding-bottom: 5px;
+      }
+
+      &-price {
+        font-weight: 400;
+        font-size: 1.6rem;
+        line-height: 1.15em;
+        color: var(--black-color);
+      }
+    }
+  }
+
+  &-end {
+    padding-bottom: 15px;
+
+    &__title {
+      font-weight: 700;
+      font-size: 1.6rem;
+      line-height: 1.15em;
+      color: var(--black-color);
+      padding-bottom: 5px;
+    }
+
+    &__date {
+      font-weight: 400;
+      font-size: 1.6rem;
+      line-height: 1.15em;
+      color: var(--black-color);
+    }
+  }
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+
+  &-input {
+    @include input;
+    flex: 1 1;
+    width: 100%;
+  }
+
+  &-button {
+  }
+}

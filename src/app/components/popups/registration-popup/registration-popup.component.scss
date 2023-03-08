@@ -1,8 +1,0 @@
-@import "../../../mixins";
-
-.form {
-  width: 100%;
-  padding-top: 20px;
-
-  @include authorization;
-}

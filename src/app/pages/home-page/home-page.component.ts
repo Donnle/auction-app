@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { debounceTime, fromEvent, Subscription } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
 import { Pagination, Product, ProductsResponse, Response } from '../../interfaces';
-import { RequestsService } from '../../services/requests.service';
+import { RequestsService } from '../../shared/services/requests.service';
 
 @Component({
   selector: 'app-home-page',

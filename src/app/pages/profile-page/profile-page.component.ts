@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
-import { RequestsService } from '../../services/requests.service';
+import { RequestsService } from '../../shared/services/requests.service';
 import {
   ButtonData,
   CityInfo,
@@ -11,9 +11,9 @@ import {
   Response,
   UserData, UserDataResponse,
 } from '../../interfaces';
-import { UserService } from '../../services/user.service';
-import { AdditionalService } from '../../services/additional.service';
-import { CityPipe } from '../../pipes/city.pipe';
+import { UserService } from '../../shared/services/user.service';
+import { AdditionalService } from '../../shared/services/additional.service';
+import { CityPipe } from '../../shared/pipes/city.pipe';
 
 @Component({
   selector: 'app-profile-page',

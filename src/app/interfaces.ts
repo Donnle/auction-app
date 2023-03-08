@@ -279,5 +279,6 @@ export interface TimeLeft {
 }
 
 export interface Environment {
+  production: boolean;
   api: string;
 }

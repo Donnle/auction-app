@@ -6,11 +6,11 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe-decorator';
 import { ToastrService } from 'ngx-toastr';
 import { MODALS, TOASTR_MESSAGES } from '../../enums';
 import { ButtonData, Product, ProductsResponse, Response, TimeLeft } from '../../interfaces';
-import { RequestsService } from '../../services/requests.service';
-import { ProductService } from '../../services/product.service';
-import { RaiseBetPopupComponent } from '../../components/popups/raise-bet-popup/raise-bet-popup.component';
-import { BuyNowPopupComponent } from '../../components/popups/buy-now-popup/buy-now-popup.component';
-import { AuthService } from '../../services/auth.service';
+import { RequestsService } from '../../shared/services/requests.service';
+import { ProductService } from '../../shared/services/product.service';
+import { RaiseBetPopupComponent } from '../../shared/components/popups/raise-bet-popup/raise-bet-popup.component';
+import { BuyNowPopupComponent } from '../../shared/components/popups/buy-now-popup/buy-now-popup.component';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-product-page',

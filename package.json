@@ -3,11 +3,13 @@
   "version": "1.5.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start:frontend": "ng serve",
+    "start:prod": "ng serve --configuration production",
     "start:frontend-proxy": "ng serve --proxy-config proxy.conf.json",
-    "start:backend": "npm run --prefix ./api start",
+    "start:backend": "npm run --prefix ./api start:nodemon",
     "start:all": "concurrently --prefix \"[{name}]\" --names \"Backend,Frontend\" \"npm run --prefix ./api start:nodemon\" \"ng serve --proxy-config proxy.conf.json\"",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development"
   },
   "private": true,

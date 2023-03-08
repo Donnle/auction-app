@@ -16,26 +16,26 @@ import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.com
 
 // COMPONENTS
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './components/header/header.component';
-import { ButtonComponent } from './components/button/button.component';
-import { LoginPopupComponent } from './components/popups/login-popup/login-popup.component';
-import { RegistrationPopupComponent } from './components/popups/registration-popup/registration-popup.component';
-import { ProductsComponent } from './components/products/products.component';
-import { ProductComponent } from './components/product/product.component';
-import { RaiseBetPopupComponent } from './components/popups/raise-bet-popup/raise-bet-popup.component';
-import { BuyNowPopupComponent } from './components/popups/buy-now-popup/buy-now-popup.component';
+import { HeaderComponent } from './shared/components/header/header.component';
+import { ButtonComponent } from './shared/components/button/button.component';
+import { LoginPopupComponent } from './shared/components/popups/login-popup/login-popup.component';
+import { RegistrationPopupComponent } from './shared/components/popups/registration-popup/registration-popup.component';
+import { ProductsComponent } from './shared/components/products/products.component';
+import { ProductComponent } from './shared/components/product/product.component';
+import { RaiseBetPopupComponent } from './shared/components/popups/raise-bet-popup/raise-bet-popup.component';
+import { BuyNowPopupComponent } from './shared/components/popups/buy-now-popup/buy-now-popup.component';
 
 // DIRECTIVES
-import { ClickOutsideDirective } from './directives/click-outside.directive';
+import { ClickOutsideDirective } from './shared/directives/click-outside.directive';
 
 // PIPES
-import { CityPipe } from './pipes/city.pipe';
+import { CityPipe } from './shared/pipes/city.pipe';
 
 // GUARDS
-import { AuthGuard } from './guards/auth.guard';
+import { AuthGuard } from './shared/guards/auth.guard';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TimeLeftPipe } from './pipes/time-left.pipe';
+import { TimeLeftPipe } from './shared/pipes/time-left.pipe';
 
 const routes = [
   {
