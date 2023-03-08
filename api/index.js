@@ -12,7 +12,7 @@ const Product = require('./models/Product-model');
 
 const socket = require('socket.io')(6464);
 
-const PORT = 8989;
+const PORT = 5000;
 
 const app = express();
 
