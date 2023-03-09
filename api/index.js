@@ -12,7 +12,7 @@ const ProductRouter = require('./router/Product-router');
 const cron = require('node-cron');
 const Product = require('./models/Product-model');
 
-const socket = require('socket.io')(process.env.PORT || 5000);
+const socket = require('socket.io')(6464);
 
 const PORT = process.env.PORT || 5000;
 
